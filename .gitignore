@@ -105,3 +105,4 @@ packages/subgraphs/contracts/
 docs/api
 
 supabase/.branches
+supabase/.temp
