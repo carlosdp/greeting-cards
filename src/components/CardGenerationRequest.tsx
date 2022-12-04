@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins */
+/* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins, promise/no-nesting */
 import { Box, Center, Image, Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
