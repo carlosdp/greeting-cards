@@ -41,13 +41,15 @@ export const CardGenerationRequest = () => {
                 console.error(r.error);
               }
               if (r.data) {
-                setAssets(
-                  r.data.map(asset => {
-                    const url = client.storage.from('assets').getPublicUrl(asset.storage_key);
+                Promise.all(
+                  r.data.map(async asset => {
+                    const url = await client.storage.from('assets').createSignedUrl(asset.storage_key, 120);
 
-                    return { id: asset.id, imageUrl: url.data.publicUrl };
+                    return { id: asset.id, imageUrl: url.data?.signedUrl || '' };
                   })
-                );
+                )
+                  .then(setAssets)
+                  .catch(console.error);
               }
             }, console.error);
         }, console.error);

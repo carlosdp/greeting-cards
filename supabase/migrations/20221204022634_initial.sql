@@ -3,6 +3,7 @@ create table asset_generation_requests (
   style varchar not null,
   description text not null,
   expected_asset_count integer not null,
+  completed boolean not null default false,
   created_at timestamptz not null default current_timestamp,
   updated_at timestamptz not null default current_timestamp
 );
