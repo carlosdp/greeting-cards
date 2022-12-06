@@ -1,10 +1,10 @@
-import { Box, Button, Heading, Image, Spinner } from '@chakra-ui/react';
+import { Box, Button, Center, Heading, Image, Spinner } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
 export const AssetDetails = () => {
-  const { requestId, id } = useParams<{ requestId: string; id: string }>();
+  const { id } = useParams<{ requestId: string; id: string }>();
   const client = useClient();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -27,8 +27,8 @@ export const AssetDetails = () => {
   }, [client, id]);
 
   const checkout = useCallback(() => {
-    navigate(`/requests/${requestId}/assets/${id}/checkout`);
-  }, [id, requestId, navigate]);
+    navigate(`/assets/${id}/checkout`);
+  }, [id, navigate]);
 
   if (!imageUrl) {
     return <Spinner />;
@@ -36,7 +36,9 @@ export const AssetDetails = () => {
 
   return (
     <Box flexDirection="column" gap="46px" display="flex">
-      <Image src={imageUrl} />
+      <Center>
+        <Image maxWidth="512px" src={imageUrl} />
+      </Center>
       <Box>
         <Heading>Looks great!</Heading>
         <Heading fontWeight="normal">Let's figure out where we're sending it, and write a thoughtful message</Heading>

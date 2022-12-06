@@ -18,8 +18,8 @@ export const CardCreationFlow = () => {
   );
 
   const onSelectAsset = useCallback(
-    (requestId: string, id: number) => {
-      navigate(`/requests/${requestId}/assets/${id}`);
+    (_requestId: string, id: number) => {
+      navigate(`/assets/${id}`);
     },
     [navigate]
   );
@@ -29,8 +29,8 @@ export const CardCreationFlow = () => {
       <Routes>
         <Route path="/" element={<CardGenerator onCardRequested={onCardRequested} />} />
         <Route path="/requests/:id" element={<CardGenerationRequest onSelectAsset={onSelectAsset} />} />
-        <Route path="/requests/:requestId/assets/:id" element={<AssetDetails />} />
-        <Route path="/requests/:requestId/assets/:id/checkout/*" element={<AssetCheckout />} />
+        <Route path="/assets/:id" element={<AssetDetails />} />
+        <Route path="/assets/:id/checkout/*" element={<AssetCheckout />} />
       </Routes>
     </Box>
   );

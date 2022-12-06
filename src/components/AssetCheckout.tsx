@@ -1,7 +1,18 @@
-import { Box, Button, FormControl, FormHelperText, Heading, Image, Spinner, Text, Textarea } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormHelperText,
+  Heading,
+  Image,
+  Spinner,
+  Text,
+  Textarea,
+} from '@chakra-ui/react';
 import { AddressElement } from '@stripe/react-stripe-js';
 import { useCallback, useEffect, useState } from 'react';
-import { Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
 import { CheckoutStepHeader } from './CheckoutStepHeader';
@@ -24,10 +35,13 @@ type NameAndAddressFormProps = {
 };
 
 const NameAndAddressForm = ({ onAddressChange, onNext }: NameAndAddressFormProps) => {
+  const [validNameAndAddress, setValidNameAndAddress] = useState(false);
+
   const onChange = useCallback(
     (e: { complete: boolean; value?: NameAndAddress }) => {
       if (e.complete && e.value) {
         onAddressChange(e.value);
+        setValidNameAndAddress(true);
       }
     },
     [onAddressChange]
@@ -47,7 +61,9 @@ const NameAndAddressForm = ({ onAddressChange, onNext }: NameAndAddressFormProps
         onChange={onChange}
       />
       <Box alignItems="center" justifyContent="center" flexDirection="row" display="flex">
-        <Button onClick={onNext}>Next</Button>
+        <Button disabled={!validNameAndAddress} onClick={onNext}>
+          Next
+        </Button>
       </Box>
     </Box>
   );
@@ -81,7 +97,9 @@ const MessageForm = ({ onMessageChange, message, onNext }: MessageFormProps) => 
           <FormHelperText>Make sure to sign off with your name</FormHelperText>
         </FormControl>
         <Box alignItems="center" justifyContent="center" flexDirection="row" display="flex">
-          <Button onClick={onNext}>Review</Button>
+          <Button disabled={message.length === 0} onClick={onNext}>
+            Review
+          </Button>
         </Box>
       </Box>
     </Box>
@@ -95,10 +113,22 @@ const DetailsReview = ({
 }: {
   nameAndAddress: NameAndAddress;
   message: string;
-  onNext?: () => void;
+  onNext?: () => Promise<void>;
 }) => {
+  const [loading, setLoading] = useState(false);
   const name = nameAndAddress.name;
   const address = `${nameAndAddress.address.line1}, ${nameAndAddress.address.city}, ${nameAndAddress.address.state} ${nameAndAddress.address.postal_code}`;
+
+  const onClick = useCallback(async () => {
+    if (onNext) {
+      try {
+        setLoading(true);
+        await onNext();
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [onNext]);
 
   return (
     <Box>
@@ -108,7 +138,32 @@ const DetailsReview = ({
       <Text>{name}</Text>
       <Text>{address}</Text>
       <Box alignItems="center" justifyContent="center" flexDirection="row" display="flex">
-        <Button onClick={onNext}>Send Card</Button>
+        <Button isLoading={loading} onClick={onClick}>
+          Send Card
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+
+const Success = () => {
+  const navigate = useNavigate();
+
+  const onClick = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+
+  return (
+    <Box flexDirection="column" gap="46px" display="flex">
+      <Box>
+        <Heading>Great!</Heading>
+        <Heading fontWeight="normal">Your order is being processed.</Heading>
+      </Box>
+      <Text>Check your email for an order confirmation.</Text>
+      <Box>
+        <Button onClick={onClick} variant="outline">
+          Make another card
+        </Button>
       </Box>
     </Box>
   );
@@ -117,9 +172,17 @@ const DetailsReview = ({
 export const AssetCheckout = () => {
   const { id } = useParams<{ id: string }>();
   const client = useClient();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [nameAndAddress, setNameAndAddress] = useState<NameAndAddress | null>(null);
   const [message, setMessage] = useState<string>('');
+
+  useEffect(() => {
+    if (location.pathname.includes('/review') && (!nameAndAddress || message.length === 0)) {
+      navigate(`/assets/${id}/checkout`);
+    }
+  }, [location, nameAndAddress, message, navigate, id]);
 
   useEffect(() => {
     if (id) {
@@ -138,6 +201,44 @@ export const AssetCheckout = () => {
     }
   }, [client, id]);
 
+  const onFinishedNameAndAddress = useCallback(() => {
+    if (nameAndAddress) {
+      navigate(`/assets/${id}/checkout/message`);
+    }
+  }, [id, nameAndAddress, navigate]);
+
+  const onFinishedMessage = useCallback(() => {
+    if (message.length > 0) {
+      navigate(`/assets/${id}/checkout/review`);
+    }
+  }, [id, message, navigate]);
+
+  const onFinalize = useCallback(async () => {
+    if (nameAndAddress && message) {
+      const res = await client
+        .from('orders')
+        .insert({
+          asset_id: id,
+          message,
+          name: nameAndAddress.name,
+          line1: nameAndAddress.address.line1,
+          line2: nameAndAddress.address.line2,
+          city: nameAndAddress.address.city,
+          state: nameAndAddress.address.state,
+          postal_code: nameAndAddress.address.postal_code,
+          country: nameAndAddress.address.country,
+        })
+        .select();
+
+      if (res.data && res.data[0]) {
+        const checkoutData = await client.functions.invoke('createCheckout', {
+          body: { orderId: res.data[0].id },
+        });
+        window.location.href = checkoutData.data.checkoutUrl;
+      }
+    }
+  }, [nameAndAddress, message, client, id]);
+
   if (!imageUrl) {
     return <Spinner />;
   }
@@ -145,11 +246,23 @@ export const AssetCheckout = () => {
   return (
     <Box flexDirection="column" gap="46px" display="flex">
       <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
-      <Image src={imageUrl} />
+      <Center>
+        <Image maxWidth="512px" src={imageUrl} />
+      </Center>
       <Routes>
-        <Route path="/" element={<NameAndAddressForm onAddressChange={setNameAndAddress} />} />
-        <Route path="/message" element={<MessageForm onMessageChange={setMessage} message={message} />} />
-        <Route path="/review" element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} />} />
+        <Route
+          path="/"
+          element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
+        />
+        <Route
+          path="/message"
+          element={<MessageForm onMessageChange={setMessage} message={message} onNext={onFinishedMessage} />}
+        />
+        <Route
+          path="/review"
+          element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
+        />
+        <Route path="/success" element={<Success />} />
       </Routes>
     </Box>
   );
