@@ -1,8 +1,10 @@
 /* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins, promise/no-nesting */
-import { Box, Center, Image, Spinner } from '@chakra-ui/react';
+import { Box, Center, Heading, Image, Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
+
+import { CheckoutStepHeader } from './CheckoutStepHeader';
 
 type GenerationRequest = {
   description: string;
@@ -14,7 +16,11 @@ type Asset = {
   imageUrl: string;
 };
 
-export const CardGenerationRequest = () => {
+export type CardGenerationRequestProps = {
+  onSelectAsset: (requestId: string, id: number) => void;
+};
+
+export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestProps) => {
   const { id } = useParams<{ id: string }>();
   const client = useClient();
   const [request, setRequest] = useState<GenerationRequest | null>(null);
@@ -56,23 +62,33 @@ export const CardGenerationRequest = () => {
     }
   }, [client, id]);
 
-  if (!request) {
+  if (!id || !request) {
     return <Spinner />;
   }
 
   return (
-    <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} display="flex">
-      {Array.from(Array(request.expected_asset_count)).map((_, i) => (
-        <Box key={i} width="300px" height="300px">
-          {assets[i] ? (
-            <Image width="300px" height="300px" src={assets[i].imageUrl} />
-          ) : (
-            <Center width="100%" height="100%">
-              <Spinner />
-            </Center>
-          )}
-        </Box>
-      ))}
+    <Box flexDirection="column" gap="46px" display="flex">
+      <Heading>Ok, how do these look?</Heading>
+      <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
+      <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
+        {Array.from(Array(request.expected_asset_count)).map((_, i) => (
+          <Box key={i} width="300px" height="300px">
+            {assets[i] ? (
+              <Image
+                width="300px"
+                height="300px"
+                cursor="pointer"
+                onClick={() => onSelectAsset(id, assets[i].id)}
+                src={assets[i].imageUrl}
+              />
+            ) : (
+              <Center width="100%" height="100%">
+                <Spinner />
+              </Center>
+            )}
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 };

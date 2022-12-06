@@ -1,16 +1,30 @@
-import { Box, FormControl, Input, FormLabel, FormHelperText, Button, FormErrorMessage } from '@chakra-ui/react';
+import {
+  Box,
+  FormControl,
+  Input,
+  FormLabel,
+  FormHelperText,
+  Button,
+  FormErrorMessage,
+  Heading,
+  Textarea,
+} from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
-export const CardGenerator = () => {
+import { CheckoutStepHeader } from './CheckoutStepHeader';
+
+export type CardGeneratorProps = {
+  onCardRequested: (id: string) => void;
+};
+
+export const CardGenerator = ({ onCardRequested }: CardGeneratorProps) => {
   const client = useClient();
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onChangeDescription: React.ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const onChangeDescription: React.ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     setDescription(e.target.value);
   }, []);
 
@@ -32,32 +46,39 @@ export const CardGenerator = () => {
         setError(result.error.message);
       } else {
         const request = result.data[0];
-        navigate(`/requests/${request.id}`);
+        onCardRequested(request.id);
       }
     } finally {
       setLoading(false);
     }
-  }, [client, description, navigate]);
+  }, [client, description, onCardRequested]);
 
   return (
-    <Box>
+    <Box flexDirection="column" gap="46px" display="flex">
+      <Box>
+        <Heading fontWeight="normal">Send a custom</Heading>
+        <Heading>Christmas</Heading>
+        <Heading>Greeting Card</Heading>
+      </Box>
+      <CheckoutStepHeader step={1} prompt="Tell us a little bit about the person that will be receiving this card" />
       <FormControl>
-        <FormLabel>Tell us a little about who you want to make a card for</FormLabel>
-        <Input
+        <Textarea
           onChange={onChangeDescription}
-          placeholder='Example: "my dad, who likes boats a lot and lives in Miami"'
+          placeholder='Example: "my dad, he loves football (he is a Jets fan), and he is a writer for a travel blog"'
           value={description}
         />
         <FormHelperText>
-          Describe the person you are sending this card to, be as specific as possible for the best results
+          Tip: Be as descriptive as possible! What are their interests? Their hobbies? Do they have a job they love?
         </FormHelperText>
         {!!error && (
           <FormErrorMessage>Oops! We're having trouble at the moment, please try again later!</FormErrorMessage>
         )}
       </FormControl>
-      <Button isDisabled={description.length === 0} isLoading={loading} onClick={onSubmit}>
-        Show me some options
-      </Button>
+      <Box alignItems="center" justifyContent="center" display="flex">
+        <Button isDisabled={description.length === 0} isLoading={loading} onClick={onSubmit}>
+          Next
+        </Button>
+      </Box>
     </Box>
   );
 };
