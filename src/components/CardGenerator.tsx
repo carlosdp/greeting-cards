@@ -1,14 +1,4 @@
-import {
-  Box,
-  FormControl,
-  Input,
-  FormLabel,
-  FormHelperText,
-  Button,
-  FormErrorMessage,
-  Heading,
-  Textarea,
-} from '@chakra-ui/react';
+import { Box, FormControl, FormHelperText, Button, FormErrorMessage, Heading, Textarea } from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
 import { useClient } from 'react-supabase';
 
