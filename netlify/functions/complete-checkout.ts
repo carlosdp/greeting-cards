@@ -33,7 +33,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     const session = evt.data.object;
     const orderId = session.client_reference_id;
 
-    client.from('orders').update({ stripe_payment_intent_id: session.payment_intent }).eq('id', orderId);
+    await client.from('orders').update({ stripe_payment_intent_id: session.payment_intent }).eq('id', orderId);
   }
 
   return {
