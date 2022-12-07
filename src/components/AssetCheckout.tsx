@@ -231,10 +231,15 @@ export const AssetCheckout = () => {
         .select();
 
       if (res.data && res.data[0]) {
-        const checkoutData = await client.functions.invoke('createCheckout', {
-          body: { orderId: res.data[0].id },
+        const checkoutRes = await fetch('/.netlify/functions/create-checkout', {
+          body: JSON.stringify({ orderId: res.data[0].id }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-        window.location.href = checkoutData.data.checkoutUrl;
+        const checkoutData = await checkoutRes.json();
+        window.location.href = checkoutData.checkoutUrl;
       }
     }
   }, [nameAndAddress, message, client, id]);

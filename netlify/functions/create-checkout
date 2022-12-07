@@ -1,0 +1,57 @@
+/* eslint-disable unicorn/filename-case */
+import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
+import { createClient } from '@supabase/supabase-js';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY ??
+    'sk_test_51IUzWoIsiWplaJ875iwgsvZcfAaSNE1KGZVvJ8KdO0xF350FRHTvIRsDuaICGaAuOPp8EdgeYKEXOTLLhTJYRJRy00TjxR1gYt',
+  {
+    // This is needed to use the Fetch API rather than relying on the Node http
+    // package.
+    httpClient: Stripe.createFetchHttpClient(),
+    apiVersion: '2022-11-15',
+  }
+);
+
+const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3000';
+const GREETING_CARD_PRICE_ID = process.env.GREETING_CARD_PRICE_ID ?? 'price_1MC5LyIsiWplaJ87HhTpaHOg';
+
+const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
+  const { orderId } = JSON.parse(event.body || '');
+
+  const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+  const { data: order, error } = await client.from('orders').select('*').eq('id', orderId).single();
+
+  if (error || !order) {
+    throw new Error('could not load order');
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: 'payment',
+    client_reference_id: orderId,
+    line_items: [
+      {
+        price: GREETING_CARD_PRICE_ID,
+        quantity: 1,
+      },
+    ],
+    success_url: `${BASE_URL}/assets/${order.asset_id}/checkout/success`,
+    cancel_url: `${BASE_URL}/assets/${order.asset_id}/checkout`,
+  });
+
+  const data = {
+    checkoutUrl: session.url,
+  };
+
+  return {
+    statusCode: 201,
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+};
+
+export { handler };
