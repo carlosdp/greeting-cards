@@ -1,4 +1,4 @@
-import { ChakraProvider, GlobalStyle } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { createClient } from '@supabase/supabase-js';
@@ -28,7 +28,6 @@ ReactDOM.createRoot(document.querySelector('#root')!).render(
   <>
     <React.StrictMode>
       <ChakraProvider theme={theme}>
-        <GlobalStyle />
         <SupabaseProvider value={supabaseClient}>
           <LocalUserProvider>
             <Elements stripe={stripe}>
