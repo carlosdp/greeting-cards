@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 
 import { Brand } from './components/Brand';
 import { CardCreationFlow } from './components/CardCreationFlow';
-import { CardGenerationRequest } from './components/CardGenerationRequest';
 
 function App() {
   return (
