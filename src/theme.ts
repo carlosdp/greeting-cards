@@ -3,16 +3,26 @@ import { extendTheme, withDefaultColorScheme } from '@chakra-ui/react';
 export const theme = extendTheme(
   {
     config: {
-      initialColorMode: 'system',
+      initialColorMode: 'light',
     },
     styles: {
-      global: {
+      global: (props: { colorMode: 'light' | 'dark' }) => ({
         'html, body': {
           fontFamily: 'Inter, sans-serif',
+          background: props.colorMode === 'dark' ? 'purple.500' : 'white',
+          transition: 'background 0.2s linear',
         },
         body: {
           padding: '20px',
           paddingTop: 0,
+        },
+      }),
+    },
+    semanticTokens: {
+      colors: {
+        brand: {
+          default: 'purple.500',
+          _dark: 'white',
         },
       },
     },

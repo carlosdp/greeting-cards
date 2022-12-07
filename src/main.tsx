@@ -1,4 +1,4 @@
-import { ChakraProvider, ColorModeScript, GlobalStyle } from '@chakra-ui/react';
+import { ChakraProvider, GlobalStyle } from '@chakra-ui/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { createClient } from '@supabase/supabase-js';
@@ -22,9 +22,10 @@ const stripe = loadStripe(
     'pk_test_51IUzWoIsiWplaJ87OSbE4TkSa1e2TDyDc0JwAUuFLUYoZXgPd7itIjFTT3WSdO2ljd3gObQd6g37VeALfUpEkW4y00Xa9TJl5K'
 );
 
+window.localStorage.setItem('chakra-ui-color-mode', 'light');
+
 ReactDOM.createRoot(document.querySelector('#root')!).render(
   <>
-    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <React.StrictMode>
       <ChakraProvider theme={theme}>
         <GlobalStyle />
