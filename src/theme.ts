@@ -15,6 +15,7 @@ export const theme = extendTheme(
         body: {
           padding: '20px',
           paddingTop: 0,
+          paddingBottom: '50px',
         },
       }),
     },
