@@ -14,7 +14,7 @@ const stripe = new Stripe(
   }
 );
 
-const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3000';
+const BASE_URL = process.env.URL ?? 'http://localhost:3000';
 const GREETING_CARD_PRICE_ID = process.env.GREETING_CARD_PRICE_ID ?? 'price_1MC5LyIsiWplaJ87HhTpaHOg';
 
 const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
