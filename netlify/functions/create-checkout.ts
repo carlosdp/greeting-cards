@@ -7,9 +7,6 @@ const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY ??
     'sk_test_51IUzWoIsiWplaJ875iwgsvZcfAaSNE1KGZVvJ8KdO0xF350FRHTvIRsDuaICGaAuOPp8EdgeYKEXOTLLhTJYRJRy00TjxR1gYt',
   {
-    // This is needed to use the Fetch API rather than relying on the Node http
-    // package.
-    httpClient: Stripe.createFetchHttpClient(),
     apiVersion: '2022-11-15',
   }
 );

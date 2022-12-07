@@ -9,8 +9,8 @@ export const theme = extendTheme(
       global: {
         'html, body': {
           fontFamily: 'Inter, sans-serif',
-          background: 'brandBackground',
-          transition: 'background 0.2s linear',
+          backgroundColor: 'brandBackground',
+          transition: 'background-color 0.2s linear',
         },
       },
     },
