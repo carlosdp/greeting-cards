@@ -12,11 +12,6 @@ export const theme = extendTheme(
           background: props.colorMode === 'dark' ? 'purple.500' : 'white',
           transition: 'background 0.2s linear',
         },
-        body: {
-          padding: '20px',
-          paddingTop: 0,
-          paddingBottom: '50px',
-        },
       }),
     },
     semanticTokens: {
