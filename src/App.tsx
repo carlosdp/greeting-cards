@@ -8,7 +8,15 @@ import { Landing } from './components/Landing';
 function App() {
   return (
     <Box alignItems="center" flexDirection="column" display="flex" width="100%">
-      <Box justifyContent="center" display="flex" width="100%" paddingTop="36px" paddingBottom="36px">
+      <Box
+        justifyContent="center"
+        display="flex"
+        width="100%"
+        paddingTop="36px"
+        paddingRight="20px"
+        paddingLeft="20px"
+        paddingBottom="36px"
+      >
         <Box alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="936px">
           <Brand />
           <Box marginLeft="auto"></Box>

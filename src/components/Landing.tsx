@@ -23,12 +23,12 @@ export const Landing = () => {
         background="url(/images/hero.png)"
       >
         <Box width="fit-content" padding="12px" backgroundColor="white">
-          <Heading fontWeight="normal">Send a custom</Heading>
-          <Heading>Christmas</Heading>
-          <Heading>Greeting Card</Heading>
+          <Heading fontWeight="normal">Personalized</Heading>
+          <Heading fontWeight="normal">Christmas Greeting Cards</Heading>
+          <Heading>in one minute</Heading>
         </Box>
       </Box>
-      <Box flexDirection="column" gap="12px" display="flex">
+      <Box flexDirection="column" gap="12px" display="flex" paddingRight="20px" paddingLeft="20px">
         <CheckoutStepHeader step={1} prompt="Tell us a little bit about the person that will be receiving the card" />
         <CheckoutStepHeader
           step={2}
