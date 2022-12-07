@@ -28,6 +28,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     client_reference_id: orderId,
+    customer_creation: 'always',
     line_items: [
       {
         price: GREETING_CARD_PRICE_ID,
