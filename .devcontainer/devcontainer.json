@@ -16,8 +16,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"dbaeumer.vscode-eslint",
-				"denoland.vscode-deno"
+				"dbaeumer.vscode-eslint"
 			]
 		}
 	}
