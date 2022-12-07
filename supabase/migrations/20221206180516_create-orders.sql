@@ -1,6 +1,6 @@
 create table orders (
   id uuid primary key default uuid_generate_v4(),
-  asset_id integer references assets(id),
+  asset_id uuid references assets(id),
   message text not null,
   name varchar not null,
   line1 varchar not null,
