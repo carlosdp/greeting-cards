@@ -1,4 +1,22 @@
-import { extendTheme, withDefaultColorScheme } from '@chakra-ui/react';
+import { extendTheme, withDefaultColorScheme, defineStyleConfig } from '@chakra-ui/react';
+
+const Button = defineStyleConfig({
+  variants: {
+    primary: {
+      color: 'purple.500',
+      backgroundColor: 'purple.100',
+      _hover: {
+        backgroundColor: 'purple.200',
+      },
+      _active: {
+        backgroundColor: 'purple.300',
+      },
+    },
+  },
+  defaultProps: {
+    variant: 'primary',
+  },
+});
 
 export const theme = extendTheme(
   {
@@ -31,6 +49,9 @@ export const theme = extendTheme(
         fontSize: '24px',
         fontFamily: 'Oleo Script, sans-serif',
       },
+    },
+    components: {
+      Button,
     },
   },
   withDefaultColorScheme({ colorScheme: 'purple' })
