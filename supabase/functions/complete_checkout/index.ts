@@ -16,8 +16,6 @@ const stripe = Stripe(
   }
 );
 
-const GREETING_CARD_PRICE_ID = Deno.env.get('GREETING_CARD_PRICE_ID') ?? 'price_1MC5LyIsiWplaJ87HhTpaHOg';
-
 serve(async req => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -28,40 +26,26 @@ serve(async req => {
     });
   }
 
-  const { orderId } = await req.json();
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, Deno.env.get('STRIPE_WEBHOOK_SECRET'));
+  } catch {
+    return new Response(null, { status: 400 });
+  }
 
   const client = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
 
-  const { data: order, error } = await client.from('orders').select('*').eq('id', orderId).single();
+  if (event.type === 'checkout.session.completed') {
+    const session = await stripe.checkout.sessions.retrieve(event.data.object.id);
+    const orderId = session.client_reference_id;
 
-  if (error || !order) {
-    throw new Error('could not load order');
+    client.from('orders').update({ stripe_payment_intent_id: session.payment_intent }).eq('id', orderId);
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    client_reference_id: orderId,
-    line_items: [
-      {
-        price: GREETING_CARD_PRICE_ID,
-        quantity: 1,
-      },
-    ],
-    success_url: `http://localhost:3000/assets/${order.asset_id}/checkout/success`,
-    cancel_url: `http://localhost:3000/assets/${order.asset_id}/checkout`,
-  });
-
-  const data = {
-    checkoutUrl: session.url,
-  };
-
-  return new Response(JSON.stringify(data), {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    },
-  });
+  return new Response(null, { status: 200 });
 });
 
 // To invoke:
