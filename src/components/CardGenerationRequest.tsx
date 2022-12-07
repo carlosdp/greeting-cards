@@ -84,7 +84,7 @@ export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestPr
       client
         .from('asset_generation_requests')
         .select()
-        .eq('id', id)
+        .eq('id', `'${id}'`)
         .single()
         .then(res => {
           setRequest(res.data);
@@ -93,7 +93,7 @@ export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestPr
           client
             .from('assets')
             .select()
-            .eq('asset_generation_request_id', id)
+            .eq('asset_generation_request_id', `'${id}'`)
             .then(r => {
               if (r.error) {
                 console.error(r.error);
