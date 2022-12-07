@@ -27,7 +27,7 @@ export const CardCreationFlow = () => {
   return (
     <Box width="100%" maxWidth="936px" padding="20px">
       <Routes>
-        <Route path="/" element={<CardGenerator onCardRequested={onCardRequested} />} />
+        <Route path="/create" element={<CardGenerator onCardRequested={onCardRequested} />} />
         <Route path="/requests/:id" element={<CardGenerationRequest onSelectAsset={onSelectAsset} />} />
         <Route path="/assets/:id" element={<AssetDetails />} />
         <Route path="/assets/:id/checkout/*" element={<AssetCheckout />} />

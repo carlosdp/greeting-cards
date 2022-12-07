@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import { Brand } from './components/Brand';
 import { CardCreationFlow } from './components/CardCreationFlow';
+import { Landing } from './components/Landing';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         </Box>
       </Box>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/*" element={<CardCreationFlow />} />
       </Routes>
     </Box>

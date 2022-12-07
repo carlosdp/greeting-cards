@@ -23,7 +23,7 @@ export const CheckoutStepHeader = ({ step, prompt }: CheckoutStepHeaderProps) =>
       >
         {step}
       </Box>
-      <Text fontSize="14px">{prompt}</Text>
+      <Text fontSize="18px">{prompt}</Text>
     </Box>
   );
 };
