@@ -6,16 +6,20 @@ export const theme = extendTheme(
       initialColorMode: 'light',
     },
     styles: {
-      global: (props: { colorMode: 'light' | 'dark' }) => ({
+      global: {
         'html, body': {
           fontFamily: 'Inter, sans-serif',
-          background: props.colorMode === 'dark' ? 'purple.500' : 'white',
+          background: 'brandBackground',
           transition: 'background 0.2s linear',
         },
-      }),
+      },
     },
     semanticTokens: {
       colors: {
+        brandBackground: {
+          default: 'white',
+          _dark: 'purple.500',
+        },
         brand: {
           default: 'purple.500',
           _dark: 'white',
