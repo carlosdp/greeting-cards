@@ -27,8 +27,6 @@ export const theme = extendTheme(
       global: {
         'html, body': {
           fontFamily: 'Inter, sans-serif',
-          backgroundColor: 'brandBackground',
-          transition: 'background-color 0.2s linear',
         },
       },
     },
