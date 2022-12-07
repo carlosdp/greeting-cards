@@ -238,8 +238,11 @@ export const AssetCheckout = () => {
             'Content-Type': 'application/json',
           },
         });
-        const checkoutData = await checkoutRes.json();
-        window.location.href = checkoutData.checkoutUrl;
+
+        if (checkoutRes.ok) {
+          const checkoutData = await checkoutRes.json();
+          window.location.href = checkoutData.checkoutUrl;
+        }
       }
     }
   }, [nameAndAddress, message, client, id]);
