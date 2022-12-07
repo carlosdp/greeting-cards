@@ -190,7 +190,7 @@ export const AssetCheckout = () => {
       client
         .from('assets')
         .select()
-        .eq('id', `'${id}'`)
+        .eq('id', id)
         .single()
         .then(async res => {
           const url = await client.storage.from('assets').createSignedUrl(res.data.storage_key, 120);
@@ -218,7 +218,7 @@ export const AssetCheckout = () => {
       const res = await client
         .from('orders')
         .insert({
-          asset_id: `'${id}'`,
+          asset_id: id,
           message,
           name: nameAndAddress.name,
           line1: nameAndAddress.address.line1,
