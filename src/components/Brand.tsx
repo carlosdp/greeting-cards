@@ -9,7 +9,7 @@ export const Brand = () => {
 
   return (
     <Box alignItems="center" flexDirection="row" display="flex" cursor="pointer" onClick={onClick}>
-      <Text as="span" textStyle="brand" color="brand">
+      <Text as="span" textStyle="brand" color="brand" id="elations-brand">
         Elations
       </Text>
     </Box>

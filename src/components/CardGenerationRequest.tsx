@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins, promise/no-nesting */
-import { Box, Center, Heading, Image, ScaleFade, Spinner, useColorMode, useDisclosure } from '@chakra-ui/react';
+import { Box, Center, Heading, Image, ScaleFade, Spinner, useDisclosure } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
@@ -7,19 +7,17 @@ import { useClient } from 'react-supabase';
 import { CheckoutStepHeader } from './CheckoutStepHeader';
 
 const Loading = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
-
   useEffect(() => {
-    if (colorMode === 'light') {
-      toggleColorMode();
-    }
+    window.document.querySelector('html')?.classList.add('elations-purple-background');
+    window.document.querySelector('body')?.classList.add('elations-purple-background');
+    window.document.querySelector('#elations-brand')?.classList.add('elations-brand-dark');
 
     return () => {
-      if (colorMode === 'dark') {
-        toggleColorMode();
-      }
+      window.document.querySelector('html')?.classList.remove('elations-purple-background');
+      window.document.querySelector('body')?.classList.remove('elations-purple-background');
+      window.document.querySelector('#elations-brand')?.classList.remove('elations-brand-dark');
     };
-  }, [colorMode, toggleColorMode]);
+  }, []);
 
   return (
     <Box justifyContent="center" flexDirection="column" gap="46px" display="flex" minHeight="80vh">
