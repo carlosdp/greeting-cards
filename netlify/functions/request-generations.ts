@@ -87,7 +87,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
             width: 576,
             height: 768,
             prompt_strength: 0.8,
-            num_outputs: 1,
+            num_outputs: 2,
             num_inference_steps: 50,
             guidance_scale: 7.5,
             scheduler: 'K_EULER',

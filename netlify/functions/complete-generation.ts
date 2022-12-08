@@ -15,19 +15,23 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-  const res = await axios({ url: webhookData.output[0], method: 'GET', responseType: 'stream' });
+  for (let i = 0; i < webhookData.output.length; i++) {
+    const output = webhookData.output[i];
 
-  const storageKey = `greeting-cards/${assetGenerationRequestId}/${webhookData.id}.png`;
+    const res = await axios({ url: output, method: 'GET', responseType: 'stream' });
 
-  await client.storage.from('assets').upload(storageKey, res.data, {
-    contentType: 'image/png',
-  });
+    const storageKey = `greeting-cards/${assetGenerationRequestId}/${webhookData.id}-${i}.png`;
 
-  await client.from('assets').insert({
-    asset_generation_request_id: assetGenerationRequestId,
-    storage_key: storageKey,
-    prompt: webhookData.input.prompt,
-  });
+    await client.storage.from('assets').upload(storageKey, res.data, {
+      contentType: 'image/png',
+    });
+
+    await client.from('assets').insert({
+      asset_generation_request_id: assetGenerationRequestId,
+      storage_key: storageKey,
+      prompt: webhookData.input.prompt,
+    });
+  }
 
   return {
     statusCode: 200,
