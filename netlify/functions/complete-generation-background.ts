@@ -17,7 +17,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
   for (let i = 0; i < webhookData.output.length; i++) {
     const output = webhookData.output[i];
 
-    const res = await axios({ url: output, method: 'GET', responseType: 'stream' });
+    const res = await axios({ url: output, method: 'GET', responseType: 'arraybuffer' });
 
     const targetWidth = 768 * 0.709_738_717_3;
 
