@@ -113,9 +113,11 @@ export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestPr
       const channel = client
         .channel(`public:assets`)
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'assets' }, async payload => {
-          const url = await client.storage.from('assets').createSignedUrl(payload.new.storage_key, 120);
+          if (payload.new.asset_generation_request_id === id) {
+            const url = await client.storage.from('assets').createSignedUrl(payload.new.storage_key, 120);
 
-          setAssets(prev => [...prev, { id: payload.new.id, imageUrl: url.data?.signedUrl || '' }]);
+            setAssets(prev => [...prev, { id: payload.new.id, imageUrl: url.data?.signedUrl || '' }]);
+          }
         })
         .subscribe();
 
