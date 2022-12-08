@@ -6,7 +6,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 
 const GREETING_CARD_SKU = 'CLASSIC-GRE-FEDR-7X5-BLA';
-const SHIPPING_METHOD = 'Express';
+const SHIPPING_METHOD = 'Standard';
 
 const handler: BackgroundHandler = async (event: HandlerEvent, _context: HandlerContext) => {
   const webhookData = JSON.parse(event.body || '');
