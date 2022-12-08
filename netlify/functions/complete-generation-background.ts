@@ -19,13 +19,15 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
 
     const res = await axios({ url: output, method: 'GET', responseType: 'arraybuffer' });
 
-    const targetWidth = 768 * 0.709_738_717_3;
+    const width = 576;
+    const targetWidth = Math.floor(768 * 0.709_738_717_3);
+    const diff = width - targetWidth;
 
     const image = await sharp(res.data)
       .extract({
-        left: 0,
+        left: Math.floor(diff / 2),
         top: 0,
-        width: Math.floor(targetWidth),
+        width: targetWidth,
         height: 768,
       })
       .png()
