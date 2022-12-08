@@ -65,13 +65,16 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   const promptInsertsRaw = res.data.choices[0].text;
 
-  // capture elements of numbered list using regex
-  const promptInserts = promptInsertsRaw.match(/(?<=\d\.\s)(.*?)(?=\n)/g);
+  // capture elements of a numbered list using regex, elements may or may not have a newline at the end
+  const promptInserts = promptInsertsRaw.match(/(?<=\d\.\s)(.*?)(?=\n|$)/g);
 
   const prompts = promptInserts.map(promptInsert => PROMPT_TEMPlATE.replace('{}', promptInsert));
 
   for (const prompt of prompts) {
     let tries = 0;
+
+    // eslint-disable-next-line
+    console.log(`Generating image for ${assetGenerationRequestId} with prompt: ${prompt}`);
 
     while (tries < 3) {
       const genRes = await axios.post(
