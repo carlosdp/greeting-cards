@@ -131,9 +131,9 @@ const DetailsReview = ({
   }, [onNext]);
 
   return (
-    <Box>
+    <Box flexDirection="column" gap="12px" display="flex" paddingBottom="46px">
       <Heading fontWeight="normal">Here's your message</Heading>
-      <Text>{message}</Text>
+      <Textarea isReadOnly value={message} />
       <Heading fontWeight="normal">and we'll send it to</Heading>
       <Text>{name}</Text>
       <Text>{address}</Text>
