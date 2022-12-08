@@ -25,7 +25,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
       .extract({
         left: 0,
         top: 0,
-        width: targetWidth,
+        width: Math.floor(targetWidth),
         height: 768,
       })
       .png()
