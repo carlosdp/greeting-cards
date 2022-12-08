@@ -15,7 +15,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-  const res = await axios.get(webhookData.output[0]);
+  const res = await axios({ url: webhookData.output[0], method: 'GET', responseType: 'stream' });
 
   const storageKey = `greeting-cards/${assetGenerationRequestId}/${webhookData.id}.png`;
 
