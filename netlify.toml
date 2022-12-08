@@ -1,0 +1,6 @@
+[functions."generate-print-job-background"]
+  included_files = ["greeting-card-7x5-template.png", "Cutive-Regular.ttf"]
+
+[dev]
+  port = 3000
+  autoLaunch = false
