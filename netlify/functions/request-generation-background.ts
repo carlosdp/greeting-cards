@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/filename-case */
-import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
+import { BackgroundHandler, HandlerEvent, HandlerContext } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 
@@ -10,13 +10,11 @@ const PROMPT_TEMPlATE =
 const NEGATIVE_PROMPT =
   'ugly, asymmetrical, gross, wrong, missing limbs, text, words, phrases, photo, watermark, dreamstime';
 
-const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
+const handler: BackgroundHandler = async (event: HandlerEvent, _context: HandlerContext) => {
   const { assetGenerationRequestId } = JSON.parse(event.body || '');
 
   if (!assetGenerationRequestId) {
-    return {
-      statusCode: 400,
-    };
+    throw new Error('assetGenerationRequestId is required');
   }
 
   const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
@@ -32,10 +30,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   }
 
   if (!assetGenerationRequest) {
-    return {
-      statusCode: 400,
-      body: 'asset generation request not found',
-    };
+    throw new Error('asset generation request not found');
   }
 
   const res = await axios.post(
@@ -115,11 +110,10 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
       break;
     }
-  }
 
-  return {
-    statusCode: 200,
-  };
+    // eslint-disable-next-line
+    console.log('Generations queued');
+  }
 };
 
 export { handler };
