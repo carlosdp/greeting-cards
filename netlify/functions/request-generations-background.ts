@@ -87,7 +87,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
             guidance_scale: 7.5,
             scheduler: 'K_EULER',
           },
-          webhook_completed: `${process.env.URL}/.netlify/functions/complete-generation?assetGenerationRequestId=${assetGenerationRequestId}`,
+          webhook_completed: `${process.env.URL}/.netlify/functions/complete-generation-background?assetGenerationRequestId=${assetGenerationRequestId}`,
         },
         {
           headers: {
