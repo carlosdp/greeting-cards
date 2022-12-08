@@ -1,6 +1,5 @@
 import { Box, FormControl, FormHelperText, Button, FormErrorMessage, Heading, Textarea } from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
-import { useClient } from 'react-supabase';
 
 import { CheckoutStepHeader } from './CheckoutStepHeader';
 
@@ -9,7 +8,6 @@ export type CardGeneratorProps = {
 };
 
 export const CardGenerator = ({ onCardRequested }: CardGeneratorProps) => {
-  const client = useClient();
   const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,35 +20,24 @@ export const CardGenerator = ({ onCardRequested }: CardGeneratorProps) => {
     try {
       setLoading(true);
 
-      const result = await client
-        .from('asset_generation_requests')
-        .insert({
-          style: 'christmas',
-          description,
-          expected_asset_count: 4,
-        })
-        .select();
+      const res = await fetch('/.netlify/functions/request-generations', {
+        method: 'POST',
+        body: JSON.stringify({ description }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-      if (result.error) {
-        console.error(result.error);
-        setError(result.error.message);
+      if (!res.ok) {
+        setError('could not generate assets');
       } else {
-        const request = result.data[0];
-
-        await fetch('/.netlify/functions/request-generations-background', {
-          method: 'POST',
-          body: JSON.stringify({ assetGenerationRequestId: request.id }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
+        const request = await res.json();
         onCardRequested(request.id);
       }
     } finally {
       setLoading(false);
     }
-  }, [client, description, onCardRequested]);
+  }, [description, onCardRequested]);
 
   return (
     <Box flexDirection="column" gap="46px" display="flex">
