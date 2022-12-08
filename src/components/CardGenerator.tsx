@@ -36,6 +36,15 @@ export const CardGenerator = ({ onCardRequested }: CardGeneratorProps) => {
         setError(result.error.message);
       } else {
         const request = result.data[0];
+
+        await fetch('/.netlify/functions/request-generation', {
+          method: 'POST',
+          body: JSON.stringify({ assetGenerationRequestId: request.id }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
         onCardRequested(request.id);
       }
     } finally {

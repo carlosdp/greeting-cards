@@ -20,11 +20,13 @@
     "@stripe/react-stripe-js": "^1.16.0",
     "@stripe/stripe-js": "^1.46.0",
     "@supabase/supabase-js": "^2.1.1",
+    "axios": "^1.2.1",
     "framer-motion": "^6",
     "react": "^18",
     "react-dom": "^18",
     "react-router-dom": "^6",
     "react-supabase": "^0.2.0",
+    "sharp": "^0.31.2",
     "stripe": "^11.2.0"
   },
   "devDependencies": {
