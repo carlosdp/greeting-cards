@@ -33,7 +33,8 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   if (!assetGenerationRequest) {
     return {
-      statusCode: 404,
+      statusCode: 400,
+      body: 'asset generation request not found',
     };
   }
 
