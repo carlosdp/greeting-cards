@@ -34,4 +34,4 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   };
 };
 
-export default { handler };
+export { handler };
