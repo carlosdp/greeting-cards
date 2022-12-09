@@ -1,21 +1,50 @@
-import {
-  Box,
-  Button,
-  Center,
-  FormControl,
-  FormHelperText,
-  Heading,
-  Image,
-  Spinner,
-  Text,
-  Textarea,
-} from '@chakra-ui/react';
+import { Box, Button, Center, FormControl, FormHelperText, Heading, Text, Textarea } from '@chakra-ui/react';
 import { AddressElement } from '@stripe/react-stripe-js';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
+import { CardImage } from './CardImage';
 import { CheckoutStepHeader } from './CheckoutStepHeader';
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 100,
+  },
+  in: {
+    opacity: 1,
+    y: 0,
+  },
+  out: {
+    opacity: 0,
+    y: -100,
+  },
+};
+
+const pageTransition = {
+  type: 'tween',
+  ease: 'easeOut',
+  duration: 0.2,
+};
+
+const AnimationLayout = () => {
+  const { pathname } = useLocation();
+
+  return (
+    <motion.div
+      key={pathname}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
+      <Outlet />
+    </motion.div>
+  );
+};
 
 type NameAndAddress = {
   name: string;
@@ -215,63 +244,58 @@ export const AssetCheckout = () => {
 
   const onFinalize = useCallback(async () => {
     if (nameAndAddress && message) {
-      const res = await client
-        .from('orders')
-        .insert({
-          asset_id: id,
-          message,
-          name: nameAndAddress.name,
-          line1: nameAndAddress.address.line1,
-          line2: nameAndAddress.address.line2,
-          city: nameAndAddress.address.city,
-          state: nameAndAddress.address.state,
-          postal_code: nameAndAddress.address.postal_code,
-          country: nameAndAddress.address.country,
-        })
-        .select();
-
-      if (res.data && res.data[0]) {
-        const checkoutRes = await fetch('/.netlify/functions/create-checkout', {
-          body: JSON.stringify({ orderId: res.data[0].id }),
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+      const checkoutRes = await fetch('/.netlify/functions/create-checkout', {
+        body: JSON.stringify({
+          order: {
+            asset_id: id,
+            message,
+            name: nameAndAddress.name,
+            line1: nameAndAddress.address.line1,
+            line2: nameAndAddress.address.line2,
+            city: nameAndAddress.address.city,
+            state: nameAndAddress.address.state,
+            postal_code: nameAndAddress.address.postal_code,
+            country: nameAndAddress.address.country,
           },
-        });
+        }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (checkoutRes.ok) {
-          const checkoutData = await checkoutRes.json();
-          window.location.href = checkoutData.checkoutUrl;
-        }
+      if (checkoutRes.ok) {
+        const checkoutData = await checkoutRes.json();
+        window.location.href = checkoutData.checkoutUrl;
       }
     }
-  }, [nameAndAddress, message, client, id]);
-
-  if (!imageUrl) {
-    return <Spinner />;
-  }
+  }, [nameAndAddress, message, id]);
 
   return (
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
-      <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
       <Center>
-        <Image maxWidth="512px" src={imageUrl} />
+        <CardImage imageUrl={imageUrl} />
       </Center>
-      <Routes>
-        <Route
-          path="/"
-          element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
-        />
-        <Route
-          path="/message"
-          element={<MessageForm onMessageChange={setMessage} message={message} onNext={onFinishedMessage} />}
-        />
-        <Route
-          path="/review"
-          element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
-        />
-        <Route path="/success" element={<Success />} />
-      </Routes>
+      <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
+      <AnimatePresence exitBeforeEnter>
+        <Routes location={location} key={location.pathname}>
+          <Route element={<AnimationLayout />}>
+            <Route
+              path="/"
+              element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
+            />
+            <Route
+              path="/message"
+              element={<MessageForm onMessageChange={setMessage} message={message} onNext={onFinishedMessage} />}
+            />
+            <Route
+              path="/review"
+              element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
+            />
+            <Route path="/success" element={<Success />} />
+          </Route>
+        </Routes>
+      </AnimatePresence>
     </Box>
   );
 };

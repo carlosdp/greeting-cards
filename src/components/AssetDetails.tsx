@@ -1,7 +1,9 @@
-import { Box, Button, Center, Heading, Image, Spinner } from '@chakra-ui/react';
+import { Box, Button, Center, Heading } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
+
+import { CardImage } from './CardImage';
 
 export const AssetDetails = () => {
   const { id } = useParams<{ requestId: string; id: string }>();
@@ -30,14 +32,10 @@ export const AssetDetails = () => {
     navigate(`/assets/${id}/checkout`);
   }, [id, navigate]);
 
-  if (!imageUrl) {
-    return <Spinner />;
-  }
-
   return (
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
       <Center>
-        <Image maxWidth="512px" src={imageUrl} />
+        <CardImage imageUrl={imageUrl} />
       </Center>
       <Box>
         <Heading>Looks great!</Heading>

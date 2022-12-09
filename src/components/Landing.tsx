@@ -14,19 +14,16 @@ export const Landing = () => {
   return (
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px">
       <Box
-        justifyContent="flex-end"
+        alignItems="center"
+        justifyContent="center"
         flexDirection="column"
         display="flex"
-        width="100%"
-        height="40vh"
-        padding="25px"
-        background="url(/images/hero.png)"
+        padding="12px"
+        backgroundColor="white"
       >
-        <Box width="fit-content" padding="12px" backgroundColor="white">
-          <Heading fontWeight="normal">Personalized</Heading>
-          <Heading fontWeight="normal">Christmas Greeting Cards</Heading>
-          <Heading>in one minute</Heading>
-        </Box>
+        <Heading>Personalized Christmas Cards</Heading>
+        <Heading fontWeight="normal">for your</Heading>
+        <Heading>friends & family</Heading>
       </Box>
       <Box flexDirection="column" gap="12px" display="flex" paddingRight="20px" paddingLeft="20px">
         <CheckoutStepHeader step={1} prompt="Tell us a little bit about the person that will be receiving the card" />

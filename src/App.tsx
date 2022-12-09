@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useMemo } from 'react';
 import { Routes, Route, Outlet, useLocation } from 'react-router-dom';
 
 import { AssetCheckout } from './components/AssetCheckout';
@@ -29,10 +30,11 @@ const pageTransition = {
 
 const AnimationLayout = () => {
   const { pathname } = useLocation();
+  const normalizedPathname = useMemo(() => (pathname.includes('checkout') ? 'checkout' : pathname), [pathname]);
 
   return (
     <motion.div
-      key={pathname}
+      key={normalizedPathname}
       initial="initial"
       animate="in"
       exit="out"
@@ -46,6 +48,10 @@ const AnimationLayout = () => {
 
 function App() {
   const location = useLocation();
+  const normalizedPathname = useMemo(
+    () => (location.pathname.includes('checkout') ? 'checkout' : location.pathname),
+    [location]
+  );
 
   return (
     <Box alignItems="center" flexDirection="column" display="flex" width="100%">
@@ -64,7 +70,7 @@ function App() {
         </Box>
       </Box>
       <AnimatePresence exitBeforeEnter>
-        <Routes location={location} key={location.pathname}>
+        <Routes location={location} key={normalizedPathname}>
           <Route element={<AnimationLayout />}>
             <Route path="/" element={<Landing />} />
             <Route path="/create" element={<CardGenerator />} />

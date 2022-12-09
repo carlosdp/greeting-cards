@@ -1,9 +1,10 @@
 /* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins, promise/no-nesting */
-import { Box, Center, Heading, Image, ScaleFade, Spinner, useDisclosure } from '@chakra-ui/react';
+import { Box, Center, Heading, Skeleton, Spinner } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
+import { CardImage } from './CardImage';
 import { CheckoutStepHeader } from './CheckoutStepHeader';
 
 const Loading = () => {
@@ -30,32 +31,13 @@ const Loading = () => {
   );
 };
 
-const CardImage = ({
-  id,
-  imageUrl,
-  onSelectAsset,
-}: {
-  id: string;
-  assetId: number;
-  imageUrl: string;
-  onSelectAsset: (_id: string) => void;
-}) => {
-  const { isOpen, onOpen } = useDisclosure();
-
-  return (
-    <ScaleFade in={isOpen}>
-      <Image maxWidth="300px" cursor="pointer" onClick={() => onSelectAsset(id)} onLoad={onOpen} src={imageUrl} />
-    </ScaleFade>
-  );
-};
-
 type GenerationRequest = {
   description: string;
   expected_asset_count: number;
 };
 
 type Asset = {
-  id: number;
+  id: string;
   imageUrl: string;
 };
 
@@ -138,11 +120,11 @@ export const CardGenerationRequest = () => {
       <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
       <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
         {assets.map((asset, i) => (
-          <CardImage key={i} id={id} assetId={asset.id} imageUrl={asset.imageUrl} onSelectAsset={onSelectAsset} />
+          <CardImage key={i} id={asset.id} imageUrl={asset.imageUrl} onSelectAsset={onSelectAsset} />
         ))}
         {assets.length < request.expected_asset_count && (
           <Center width="100%" height="100%">
-            <Spinner />
+            <Skeleton width="300px" height="500px" />
           </Center>
         )}
       </Box>
