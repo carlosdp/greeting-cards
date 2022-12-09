@@ -1,4 +1,4 @@
-import { Box, Button, Center, FormControl, FormHelperText, Heading, Text, Textarea } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormHelperText, Heading, Text, Textarea } from '@chakra-ui/react';
 import { AddressElement } from '@stripe/react-stripe-js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';

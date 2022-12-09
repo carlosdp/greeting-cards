@@ -24,7 +24,7 @@ const Loading = () => {
     <Box justifyContent="center" flexDirection="column" gap="46px" display="flex" minHeight="80vh">
       <Box>
         <Heading fontWeight="normal">Give us a minute...</Heading>
-        <Heading>Our gnomes are designing your cards</Heading>
+        <Heading>Our elves are designing your cards</Heading>
       </Box>
       <Spinner size="xl" thickness="4px" />
     </Box>

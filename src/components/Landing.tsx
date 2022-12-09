@@ -29,7 +29,7 @@ export const Landing = () => {
         <CheckoutStepHeader step={1} prompt="Tell us a little bit about the person that will be receiving the card" />
         <CheckoutStepHeader
           step={2}
-          prompt="Our robot gnomes will design some options for you to look at within a minute"
+          prompt="Our robot elves will design some options for you to look at within a minute"
         />
         <CheckoutStepHeader step={3} prompt="Choose a design you like, and we’ll mail it for you!" />
       </Box>
