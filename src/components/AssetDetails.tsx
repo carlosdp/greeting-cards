@@ -35,7 +35,7 @@ export const AssetDetails = () => {
   }
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex">
+    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
       <Center>
         <Image maxWidth="512px" src={imageUrl} />
       </Center>

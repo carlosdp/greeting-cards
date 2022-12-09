@@ -1,13 +1,11 @@
 import { Box, FormControl, FormHelperText, Button, FormErrorMessage, Heading, Textarea } from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { CheckoutStepHeader } from './CheckoutStepHeader';
 
-export type CardGeneratorProps = {
-  onCardRequested: (id: string) => void;
-};
-
-export const CardGenerator = ({ onCardRequested }: CardGeneratorProps) => {
+export const CardGenerator = () => {
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,15 +30,15 @@ export const CardGenerator = ({ onCardRequested }: CardGeneratorProps) => {
         setError('could not generate assets');
       } else {
         const request = await res.json();
-        onCardRequested(request.id);
+        navigate(`/requests/${request.id}`);
       }
     } finally {
       setLoading(false);
     }
-  }, [description, onCardRequested]);
+  }, [description, navigate]);
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex">
+    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
       <Box>
         <Heading fontWeight="normal">Send a custom</Heading>
         <Heading>Christmas</Heading>

@@ -252,7 +252,7 @@ export const AssetCheckout = () => {
   }
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex">
+    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
       <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
       <Center>
         <Image maxWidth="512px" src={imageUrl} />

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins, promise/no-nesting */
 import { Box, Center, Heading, Image, ScaleFade, Spinner, useDisclosure } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
 import { CheckoutStepHeader } from './CheckoutStepHeader';
@@ -32,26 +32,19 @@ const Loading = () => {
 
 const CardImage = ({
   id,
-  assetId,
   imageUrl,
   onSelectAsset,
 }: {
   id: string;
   assetId: number;
   imageUrl: string;
-  onSelectAsset: (_id: string, _assetId: number) => void;
+  onSelectAsset: (_id: string) => void;
 }) => {
   const { isOpen, onOpen } = useDisclosure();
 
   return (
     <ScaleFade in={isOpen}>
-      <Image
-        maxWidth="300px"
-        cursor="pointer"
-        onClick={() => onSelectAsset(id, assetId)}
-        onLoad={onOpen}
-        src={imageUrl}
-      />
+      <Image maxWidth="300px" cursor="pointer" onClick={() => onSelectAsset(id)} onLoad={onOpen} src={imageUrl} />
     </ScaleFade>
   );
 };
@@ -66,12 +59,9 @@ type Asset = {
   imageUrl: string;
 };
 
-export type CardGenerationRequestProps = {
-  onSelectAsset: (requestId: string, id: number) => void;
-};
-
-export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestProps) => {
+export const CardGenerationRequest = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const client = useClient();
   const [request, setRequest] = useState<GenerationRequest | null>(null);
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -127,6 +117,13 @@ export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestPr
     }
   }, [client, id]);
 
+  const onSelectAsset = useCallback(
+    (assetId: string) => {
+      navigate(`/assets/${assetId}`);
+    },
+    [navigate]
+  );
+
   if (!id || !request) {
     return <Loading />;
   }
@@ -136,7 +133,7 @@ export const CardGenerationRequest = ({ onSelectAsset }: CardGenerationRequestPr
   }
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex">
+    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
       <Heading>Ok, how do these look?</Heading>
       <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
       <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
