@@ -1,4 +1,4 @@
-import { Box, Button, Center, Heading } from '@chakra-ui/react';
+import { Box, Button, Center, Heading, Stat, StatHelpText, StatLabel, StatNumber } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
@@ -33,16 +33,30 @@ export const AssetDetails = () => {
   }, [id, navigate]);
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
+    <Box
+      flexDirection={{ sm: 'column', md: 'row' }}
+      gap="46px"
+      display="flex"
+      width="100%"
+      maxWidth="936px"
+      padding="20px"
+    >
       <Center>
         <CardImage imageUrl={imageUrl} />
       </Center>
-      <Box>
-        <Heading>Looks great!</Heading>
-        <Heading fontWeight="normal">Let's figure out where we're sending it, and write a thoughtful message</Heading>
-      </Box>
-      <Box alignItems="center" justifyContent="center" display="flex">
-        <Button onClick={checkout}>Send Card</Button>
+      <Box flexDirection="column" gap="25px" display="flex">
+        <Box>
+          <Heading>Looks great!</Heading>
+          <Heading fontWeight="normal">Let's write a thoughtful message, and have it mailed</Heading>
+        </Box>
+        <Stat flexGrow={0}>
+          <StatLabel>Price</StatLabel>
+          <StatNumber>$10</StatNumber>
+          <StatHelpText>incl. printing & shipping</StatHelpText>
+        </Stat>
+        <Box alignItems="center" display="flex">
+          <Button onClick={checkout}>Write Message</Button>
+        </Box>
       </Box>
     </Box>
   );

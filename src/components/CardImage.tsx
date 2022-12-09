@@ -19,7 +19,7 @@ export const CardImage = ({
   }, [id, onSelectAsset]);
 
   return (
-    <Box height="500px">
+    <Box width="300px" height="500px">
       <ScaleFade in={isOpen}>
         {imageUrl && <Image maxWidth="300px" cursor="pointer" onClick={onClick} onLoad={onOpen} src={imageUrl} />}
       </ScaleFade>

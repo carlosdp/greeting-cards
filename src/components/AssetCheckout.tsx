@@ -78,7 +78,7 @@ const NameAndAddressForm = ({ onAddressChange, onNext }: NameAndAddressFormProps
 
   return (
     <Box flexDirection="column" gap="46px" display="flex">
-      <Heading fontWeight="normal">Where are we sending it?</Heading>
+      <Heading fontWeight="normal">Lastly, where are we sending it?</Heading>
       <AddressElement
         options={{
           mode: 'shipping',
@@ -111,10 +111,10 @@ const MessageForm = ({ onMessageChange, message, onNext }: MessageFormProps) => 
   );
 
   return (
-    <Box alignItems="center" justifyContent="center" flex={1} display="flex">
+    <Box alignItems="center" justifyContent={{ sm: 'center', md: 'flex-start' }} flex={1} display="flex">
       <Box flexDirection="column" gap="46px" display="flex">
         <Box>
-          <Heading fontWeight="normal">Lastly, write a message</Heading>
+          <Heading fontWeight="normal">Write a message</Heading>
           <Heading>for the inside of the card</Heading>
         </Box>
         <FormControl>
@@ -125,7 +125,7 @@ const MessageForm = ({ onMessageChange, message, onNext }: MessageFormProps) => 
           />
           <FormHelperText>Make sure to sign off with your name</FormHelperText>
         </FormControl>
-        <Box alignItems="center" justifyContent="center" flexDirection="row" display="flex">
+        <Box alignItems="center" flexDirection="row" display="flex">
           <Button disabled={message.length === 0} onClick={onNext}>
             Review
           </Button>
@@ -166,7 +166,7 @@ const DetailsReview = ({
       <Heading fontWeight="normal">and we'll send it to</Heading>
       <Text>{name}</Text>
       <Text>{address}</Text>
-      <Box alignItems="center" justifyContent="center" flexDirection="row" display="flex">
+      <Box alignItems="center" flexDirection="row" display="flex">
         <Button isLoading={loading} onClick={onClick}>
           Send Card
         </Button>
@@ -230,17 +230,17 @@ export const AssetCheckout = () => {
     }
   }, [client, id]);
 
-  const onFinishedNameAndAddress = useCallback(() => {
-    if (nameAndAddress) {
-      navigate(`/assets/${id}/checkout/message`);
-    }
-  }, [id, nameAndAddress, navigate]);
-
   const onFinishedMessage = useCallback(() => {
     if (message.length > 0) {
-      navigate(`/assets/${id}/checkout/review`);
+      navigate(`/assets/${id}/checkout/address`);
     }
   }, [id, message, navigate]);
+
+  const onFinishedNameAndAddress = useCallback(() => {
+    if (nameAndAddress) {
+      navigate(`/assets/${id}/checkout/review`);
+    }
+  }, [id, nameAndAddress, navigate]);
 
   const onFinalize = useCallback(async () => {
     if (nameAndAddress && message) {
@@ -272,30 +272,39 @@ export const AssetCheckout = () => {
   }, [nameAndAddress, message, id]);
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
-      <Center>
+    <Box
+      flexDirection={{ sm: 'column', md: 'row' }}
+      gap="46px"
+      display="flex"
+      width="100%"
+      maxWidth="936px"
+      padding="20px"
+    >
+      <Box justifyContent="center" display="flex">
         <CardImage imageUrl={imageUrl} />
-      </Center>
-      <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
-      <AnimatePresence exitBeforeEnter>
-        <Routes location={location} key={location.pathname}>
-          <Route element={<AnimationLayout />}>
-            <Route
-              path="/"
-              element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
-            />
-            <Route
-              path="/message"
-              element={<MessageForm onMessageChange={setMessage} message={message} onNext={onFinishedMessage} />}
-            />
-            <Route
-              path="/review"
-              element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
-            />
-            <Route path="/success" element={<Success />} />
-          </Route>
-        </Routes>
-      </AnimatePresence>
+      </Box>
+      <Box flexDirection="column" gap="25px" display="flex">
+        <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
+        <AnimatePresence exitBeforeEnter>
+          <Routes location={location} key={location.pathname}>
+            <Route element={<AnimationLayout />}>
+              <Route
+                path="/"
+                element={<MessageForm onMessageChange={setMessage} message={message} onNext={onFinishedMessage} />}
+              />
+              <Route
+                path="/address"
+                element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
+              />
+              <Route
+                path="/review"
+                element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
+              />
+              <Route path="/success" element={<Success />} />
+            </Route>
+          </Routes>
+        </AnimatePresence>
+      </Box>
     </Box>
   );
 };
