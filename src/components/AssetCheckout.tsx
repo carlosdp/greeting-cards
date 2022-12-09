@@ -111,7 +111,7 @@ const MessageForm = ({ onMessageChange, message, onNext }: MessageFormProps) => 
   );
 
   return (
-    <Box alignItems="center" justifyContent={{ sm: 'center', md: 'flex-start' }} flex={1} display="flex">
+    <Box alignItems="center" justifyContent={{ base: 'center', lg: 'flex-start' }} flex={1} display="flex">
       <Box flexDirection="column" gap="46px" display="flex">
         <Box>
           <Heading fontWeight="normal">Write a message</Heading>
@@ -273,7 +273,7 @@ export const AssetCheckout = () => {
 
   return (
     <Box
-      flexDirection={{ sm: 'column', md: 'row' }}
+      flexDirection={{ base: 'column', lg: 'row' }}
       gap="46px"
       display="flex"
       width="100%"

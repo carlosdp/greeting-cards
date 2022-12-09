@@ -34,7 +34,7 @@ export const AssetDetails = () => {
 
   return (
     <Box
-      flexDirection={{ sm: 'column', md: 'row' }}
+      flexDirection={{ base: 'column', lg: 'row' }}
       gap="46px"
       display="flex"
       width="100%"
