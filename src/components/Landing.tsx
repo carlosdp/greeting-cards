@@ -1,8 +1,18 @@
-import { Box, Heading, Center, Button } from '@chakra-ui/react';
+import { Box, Heading, Center, Button, useDisclosure, Fade } from '@chakra-ui/react';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { CheckoutStepHeader } from './CheckoutStepHeader';
+const Video = () => {
+  const { isOpen, onOpen } = useDisclosure();
+
+  return (
+    <Fade in={isOpen}>
+      <Box as="video" border="none" autoPlay loop muted onCanPlay={onOpen} playsInline>
+        <Box as="source" src="/images/landing-animation.mp4" type="video/mp4" />
+      </Box>
+    </Fade>
+  );
+};
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -12,30 +22,37 @@ export const Landing = () => {
   }, [navigate]);
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px">
-      <Box
-        alignItems="center"
-        justifyContent="center"
-        flexDirection="column"
-        display="flex"
-        padding="12px"
-        backgroundColor="white"
-      >
-        <Heading>Personalized Christmas Cards</Heading>
-        <Heading fontWeight="normal">for your</Heading>
-        <Heading>friends & family</Heading>
+    <Box
+      flexDirection={{ base: 'column-reverse', lg: 'column' }}
+      gap={{ base: '12px', lg: '46px' }}
+      display="flex"
+      width="100%"
+      maxWidth="1240px"
+    >
+      <Box>
+        <Box
+          alignItems="center"
+          justifyContent="center"
+          flexDirection="column"
+          gap="12px"
+          display="flex"
+          padding="20px"
+          backgroundColor="white"
+        >
+          <Heading fontSize={{ base: '48px', md: '64px' }} textAlign="center">
+            Impress your loved ones with a unique, personalized greeting card
+          </Heading>
+          <Heading as="h2" fontSize="24px" fontWeight="normal">
+            Send friends & family personalized, physical messages mailed to their home, in a just a few taps
+          </Heading>
+        </Box>
+        <Center>
+          <Button onClick={onDesignCard} size="lg">
+            Design a Card
+          </Button>
+        </Center>
       </Box>
-      <Box flexDirection="column" gap="12px" display="flex" paddingRight="20px" paddingLeft="20px">
-        <CheckoutStepHeader step={1} prompt="Tell us a little bit about the person that will be receiving the card" />
-        <CheckoutStepHeader
-          step={2}
-          prompt="Our robot elves will design some options for you to look at within a minute"
-        />
-        <CheckoutStepHeader step={3} prompt="Choose a design you like, and we’ll mail it for you!" />
-      </Box>
-      <Center>
-        <Button onClick={onDesignCard}>Design a Card</Button>
-      </Center>
+      <Video />
     </Box>
   );
 };

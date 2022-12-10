@@ -64,7 +64,7 @@ function App() {
         paddingLeft="20px"
         paddingBottom="36px"
       >
-        <Box alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="936px">
+        <Box alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="1240px">
           <Brand />
           <Box marginLeft="auto"></Box>
         </Box>

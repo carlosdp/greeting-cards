@@ -29,7 +29,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
       {
         input: {
           text: {
-            text: `<span foreground="black">${order.message}</span>`,
+            text: `<span foreground="black" line_height="2">${order.message}</span>`,
             font: 'Cutive',
             fontfile: path.join(__dirname, '..', '..', 'Cutive-Regular.ttf'),
             width: 1149,
