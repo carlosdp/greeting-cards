@@ -327,7 +327,7 @@ export const AssetCheckout = () => {
       display="flex"
       width="100%"
       maxWidth="936px"
-      padding="20px"
+      padding="32px"
     >
       <Box justifyContent="center" display="flex">
         <CardImage imageUrl={imageUrl} />

@@ -21,7 +21,7 @@ const Loading = () => {
   }, []);
 
   return (
-    <Box justifyContent="center" flexDirection="column" gap="46px" display="flex" minHeight="80vh">
+    <Box justifyContent="center" flexDirection="column" gap="46px" display="flex" minHeight="80vh" padding="32px">
       <Box>
         <Heading fontWeight="normal">Give us a minute...</Heading>
         <Heading>Our elves are designing your cards</Heading>
@@ -115,7 +115,7 @@ export const CardGenerationRequest = () => {
   }
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
+    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="32px">
       <Heading>Ok, how do these look?</Heading>
       <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
       <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">

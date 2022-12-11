@@ -39,7 +39,7 @@ export const AssetDetails = () => {
       display="flex"
       width="100%"
       maxWidth="936px"
-      padding="20px"
+      padding="32px"
     >
       <Center>
         <CardImage imageUrl={imageUrl} />

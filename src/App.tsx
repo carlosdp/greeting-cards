@@ -68,8 +68,8 @@ function App() {
         display="flex"
         width="100%"
         paddingTop="36px"
-        paddingRight="20px"
-        paddingLeft="20px"
+        paddingRight="32px"
+        paddingLeft="32px"
         paddingBottom="36px"
       >
         <Box alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="1240px">

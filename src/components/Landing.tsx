@@ -36,8 +36,9 @@ export const Landing = () => {
           flexDirection="column"
           gap="12px"
           display="flex"
-          padding="20px"
+          padding="32px"
           backgroundColor="white"
+          paddingBottom={{ base: '50px', lg: '32px' }}
         >
           <Heading fontSize={{ base: '48px', md: '64px' }} textAlign="center">
             Unique, personalized greeting cards, instantly
