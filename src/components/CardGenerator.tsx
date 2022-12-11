@@ -55,7 +55,7 @@ export const CardGenerator = () => {
 
   return (
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
-      <CheckoutStepHeader step={1} prompt="Who's going to be receiving this card?" />
+      <CheckoutStepHeader step={1} prompt="Tell us about who will be receiving this card" />
       <Routes>
         <Route path="/" element={<PersonaSelector onSelect={onSelectPersona} />} />
         <Route path="/interests" element={<InterestsSelector onSelect={onSelectInterests} isLoading={loading} />} />
