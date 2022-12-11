@@ -5,10 +5,9 @@ import axios from 'axios';
 
 const INSTRUCTION_TEMPLATE =
   'I am designing a greeting card for {persona} for {style}. Some of her interests are: {interests}.\nThe cover cannot include any text, phrases, or lettering.\nWe need to make sure there is at least one element that makes it festive and match the occasion. Here are some Christmas elements we could include: snow, christmas tree, reindeer, santa, santa hat, christmas stocking, tree ornament, christmas star, snowman.\nThe top two examples of designs for a great, unique, and personalized greeting card cover for this client, in a numbered list, are:';
-const PROMPT_TEMPlATE =
-  '{}, pretty, bright, colorful, high quality, symmetrical, sharp focus, in the style of a greeting card cover drawing print';
+const PROMPT_TEMPlATE = '{}, artstation, hd, dramatic lighting, cartoon, illustration, detailed';
 const NEGATIVE_PROMPT =
-  'ugly, asymmetrical, gross, wrong, missing limbs, text, words, phrases, photo, watermark, dreamstime';
+  'ugly, asymmetrical, gross, wrong, missing limbs, text, words, phrases, photo, watermark, missing eye';
 
 const handler: BackgroundHandler = async (event: HandlerEvent, _context: HandlerContext) => {
   const { assetGenerationRequestId } = JSON.parse(event.body || '');
@@ -95,57 +94,63 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
   // capture elements of a numbered list using regex, elements may or may not have a newline at the end
   const promptInserts = promptInsertsRaw.match(/(?<=\d\.\s)(.*?)(?=\n|$)/g);
 
-  const prompts = promptInserts.map(promptInsert => PROMPT_TEMPlATE.replace('{}', promptInsert));
+  const prompts = promptInserts.map(promptInsert =>
+    PROMPT_TEMPlATE.replace('{}', promptInsert.charAt(0).toLowerCase() + promptInsert.slice(1).replace('.', ''))
+  );
 
-  for (const prompt of prompts) {
-    let tries = 0;
+  for (let i = 0; i < assetGenerationRequest.expected_asset_count / 2; i++) {
+    for (const prompt of prompts) {
+      let tries = 0;
 
-    // eslint-disable-next-line
-    console.log(`Generating image for ${assetGenerationRequestId} with prompt: ${prompt}`);
+      // eslint-disable-next-line no-console
+      console.log(`Generating image for ${assetGenerationRequestId} with prompt: ${prompt}`);
 
-    while (tries < 3) {
-      const genRes = await axios.post(
-        'https://api.replicate.com/v1/predictions',
-        {
-          version: '0827b64897df7b6e8c04625167bbb275b9db0f14ab09e2454b9824141963c966',
-          input: {
-            prompt,
-            negative_prompt: NEGATIVE_PROMPT,
-            width: 576,
-            height: 768,
-            prompt_strength: 0.8,
-            num_outputs: 2,
-            num_inference_steps: 50,
-            guidance_scale: 7.5,
-            scheduler: 'K_EULER',
+      while (tries < 3) {
+        const genRes = await axios.post(
+          'https://api.replicate.com/v1/predictions',
+          {
+            version: '0827b64897df7b6e8c04625167bbb275b9db0f14ab09e2454b9824141963c966',
+            input: {
+              prompt,
+              negative_prompt: NEGATIVE_PROMPT,
+              width: 576,
+              height: 768,
+              prompt_strength: 0.8,
+              num_outputs: 2,
+              num_inference_steps: 50,
+              guidance_scale: 7.5,
+              scheduler: 'K_EULER',
+            },
+            webhook_completed: `${process.env.URL}/.netlify/functions/complete-generation-background?assetGenerationRequestId=${assetGenerationRequestId}`,
           },
-          webhook_completed: `${process.env.URL}/.netlify/functions/complete-generation-background?assetGenerationRequestId=${assetGenerationRequestId}`,
-        },
-        {
-          headers: {
-            Authorization: `Token ${process.env.REPLICATE_API_KEY}`,
-          },
+          {
+            headers: {
+              Authorization: `Token ${process.env.REPLICATE_API_KEY}`,
+            },
+          }
+        );
+
+        if (genRes.status === 429) {
+          tries++;
+
+          await new Promise(resolve => setTimeout(resolve, Math.random() * 10_000));
+
+          continue;
         }
-      );
 
-      if (genRes.status === 429) {
-        tries++;
+        if (genRes.status > 299) {
+          throw new Error('could not generate image');
+        }
 
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 10_000));
-
-        continue;
+        break;
       }
 
-      if (genRes.status > 299) {
-        throw new Error('could not generate image');
-      }
-
-      break;
+      await new Promise(resolve => setTimeout(resolve, Math.random() * 2000));
     }
-
-    // eslint-disable-next-line
-    console.log('Generations queued');
   }
+
+  // eslint-disable-next-line no-console
+  console.log('Generations queued');
 };
 
 export { handler };

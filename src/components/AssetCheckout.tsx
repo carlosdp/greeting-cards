@@ -323,7 +323,7 @@ export const AssetCheckout = () => {
   return (
     <Box
       flexDirection={{ base: 'column', lg: 'row' }}
-      gap="46px"
+      gap={{ base: '12px', lg: '46px' }}
       display="flex"
       width="100%"
       maxWidth="936px"

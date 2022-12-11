@@ -118,13 +118,13 @@ export const CardGenerationRequest = () => {
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="32px">
       <Heading>Ok, how do these look?</Heading>
       <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
-      <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
+      <Box flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
         {assets.map((asset, i) => (
-          <CardImage key={i} id={asset.id} imageUrl={asset.imageUrl} onSelectAsset={onSelectAsset} />
+          <CardImage key={i} id={asset.id} size="sm" imageUrl={asset.imageUrl} onSelectAsset={onSelectAsset} />
         ))}
         {assets.length < request.expected_asset_count && (
           <Center width="100%" height="100%">
-            <Skeleton width="300px" height="500px" />
+            <Skeleton width="100px" height="200px" />
           </Center>
         )}
       </Box>

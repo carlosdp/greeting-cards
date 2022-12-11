@@ -10,7 +10,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   const { data: request, error } = await client
     .from('asset_generation_requests')
-    .insert({ persona_id, description: 'old', style: 'christmas', expected_asset_count: 4 })
+    .insert({ persona_id, description: 'old', style: 'christmas', expected_asset_count: 20 })
     .select()
     .single();
 

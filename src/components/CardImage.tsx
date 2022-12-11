@@ -1,14 +1,31 @@
 import { Box, Image, ScaleFade, useDisclosure } from '@chakra-ui/react';
 import { useCallback } from 'react';
 
+const sizes = {
+  sm: {
+    width: '100px',
+    height: '200px',
+  },
+  md: {
+    width: '200px',
+    height: '350px',
+  },
+  lg: {
+    width: '300px',
+    height: '500px',
+  },
+};
+
 export const CardImage = ({
   id,
   imageUrl,
   onSelectAsset,
+  size,
 }: {
   imageUrl?: string | null;
   id?: string | null;
   onSelectAsset?: (_id: string) => void;
+  size?: 'sm' | 'md' | 'lg';
 }) => {
   const { isOpen, onOpen } = useDisclosure();
 
@@ -19,9 +36,9 @@ export const CardImage = ({
   }, [id, onSelectAsset]);
 
   return (
-    <Box width="300px" height="500px">
+    <Box width={{ base: '200px', lg: '300px' }} height={{ base: '350px', lg: '500px' }} {...(size && sizes[size])}>
       <ScaleFade in={isOpen}>
-        {imageUrl && <Image maxWidth="300px" cursor="pointer" onClick={onClick} onLoad={onOpen} src={imageUrl} />}
+        {imageUrl && <Image maxWidth="100%" cursor="pointer" onClick={onClick} onLoad={onOpen} src={imageUrl} />}
       </ScaleFade>
     </Box>
   );
