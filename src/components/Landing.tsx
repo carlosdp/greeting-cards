@@ -40,10 +40,11 @@ export const Landing = () => {
           backgroundColor="white"
         >
           <Heading fontSize={{ base: '48px', md: '64px' }} textAlign="center">
-            Impress your loved ones with a unique, personalized greeting card
+            Unique, personalized greeting cards, instantly
           </Heading>
-          <Heading as="h2" fontSize="24px" fontWeight="normal">
-            Send friends & family personalized, physical messages mailed to their home, in a just a few taps
+          <Heading as="h2" fontSize="24px" fontWeight="normal" textAlign="center">
+            In just a few taps, impress your loved ones with a personalized greeting card, designed by you (and our
+            robot team)
           </Heading>
         </Box>
         <Center>
