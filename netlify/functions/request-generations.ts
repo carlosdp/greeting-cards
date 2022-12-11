@@ -4,17 +4,30 @@ import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 
 const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
-  const { description } = JSON.parse(event.body || '');
+  const { persona_id, interest_ids } = JSON.parse(event.body || '');
 
   const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
   const { data: request, error } = await client
     .from('asset_generation_requests')
-    .insert({ description, style: 'christmas', expected_asset_count: 4 })
+    .insert({ persona_id, description: 'old', style: 'christmas', expected_asset_count: 4 })
     .select()
     .single();
 
   if (error || !request) {
+    console.error(error);
+
+    return {
+      statusCode: 500,
+      body: 'could not create request',
+    };
+  }
+
+  const { error: interestsError } = await client
+    .from('asset_generation_request_interests')
+    .insert(interest_ids.map((id: string) => ({ asset_generation_request_id: request.id, interest_id: id })));
+
+  if (interestsError) {
     console.error(error);
 
     return {

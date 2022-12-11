@@ -30,7 +30,10 @@ const pageTransition = {
 
 const AnimationLayout = () => {
   const { pathname } = useLocation();
-  const normalizedPathname = useMemo(() => (pathname.includes('checkout') ? 'checkout' : pathname), [pathname]);
+  const normalizedPathname = useMemo(
+    () => (pathname.includes('checkout') ? 'checkout' : pathname.includes('create') ? 'create' : pathname),
+    [pathname]
+  );
 
   return (
     <motion.div
@@ -49,7 +52,12 @@ const AnimationLayout = () => {
 function App() {
   const location = useLocation();
   const normalizedPathname = useMemo(
-    () => (location.pathname.includes('checkout') ? 'checkout' : location.pathname),
+    () =>
+      location.pathname.includes('checkout')
+        ? 'checkout'
+        : location.pathname.includes('create')
+        ? 'create'
+        : location.pathname,
     [location]
   );
 
@@ -73,7 +81,7 @@ function App() {
         <Routes location={location} key={normalizedPathname}>
           <Route element={<AnimationLayout />}>
             <Route path="/" element={<Landing />} />
-            <Route path="/create" element={<CardGenerator />} />
+            <Route path="/create/*" element={<CardGenerator />} />
             <Route path="/requests/:id" element={<CardGenerationRequest />} />
             <Route path="/assets/:id" element={<AssetDetails />} />
             <Route path="/assets/:id/checkout/*" element={<AssetCheckout />} />

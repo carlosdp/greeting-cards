@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 
 const INSTRUCTION_TEMPLATE =
-  'We are designing amazing greeting cards for {style}. Our client wants a greeting card designed, and had this to say about the recipient:\n\n"{description}"\n\nThe cover cannot include any text, phrases, or lettering.\n\nWe need to make sure there is at least one element that makes it festive and match the occasion. Here are some Christmas elements we could include: snow, christmas tree, reindeer, santa, santa hat, christmas stocking, tree ornament, christmas star, snowman.\n\nThe top two examples of designs for a great greeting card cover, in a numbered list, are:';
+  'I am designing a greeting card for {persona} for {style}. Some of her interests are: {interests}.\nThe cover cannot include any text, phrases, or lettering.\nWe need to make sure there is at least one element that makes it festive and match the occasion. Here are some Christmas elements we could include: snow, christmas tree, reindeer, santa, santa hat, christmas stocking, tree ornament, christmas star, snowman.\nThe top two examples of designs for a great, unique, and personalized greeting card cover for this client, in a numbered list, are:';
 const PROMPT_TEMPlATE =
   '{}, pretty, bright, colorful, high quality, symmetrical, sharp focus, in the style of a greeting card cover drawing print';
 const NEGATIVE_PROMPT =
@@ -33,14 +33,46 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
     throw new Error('asset generation request not found');
   }
 
+  const { data: persona } = await client
+    .from('personas')
+    .select('*')
+    .eq('id', assetGenerationRequest.persona_id)
+    .single();
+
+  if (!persona) {
+    throw new Error('persona not found');
+  }
+
+  const { data: interest_ids } = await client
+    .from('asset_generation_request_interests')
+    .select('interest_id')
+    .eq('asset_generation_request_id', assetGenerationRequestId);
+
+  if (!interest_ids) {
+    throw new Error('interests not found');
+  }
+
+  const { data: interests } = await client
+    .from('interests')
+    .select('*')
+    .in(
+      'id',
+      interest_ids.map(({ interest_id }) => interest_id)
+    );
+
+  if (!interests) {
+    throw new Error('interests not found');
+  }
+
+  const interestPrompt = interests.map(({ prompt }) => prompt).join(', ');
+
   const res = await axios.post(
     'https://api.openai.com/v1/completions',
     {
       model: 'text-davinci-003',
-      prompt: INSTRUCTION_TEMPLATE.replace('{style}', assetGenerationRequest.style).replace(
-        '{description}',
-        assetGenerationRequest.description
-      ),
+      prompt: INSTRUCTION_TEMPLATE.replace('{style}', assetGenerationRequest.style)
+        .replace('{persona}', persona.prompt)
+        .replace('{interests}', interestPrompt),
       max_tokens: 256,
       temperature: 0.7,
       top_p: 1,
