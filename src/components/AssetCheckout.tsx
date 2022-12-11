@@ -7,6 +7,7 @@ import { useClient } from 'react-supabase';
 
 import { CardImage } from './CardImage';
 import { CheckoutStepHeader } from './CheckoutStepHeader';
+import { MessageCreator } from './MessageCreator';
 
 const pageVariants = {
   initial: {
@@ -99,15 +100,75 @@ const NameAndAddressForm = ({ onAddressChange, onNext }: NameAndAddressFormProps
 };
 
 type MessageFormProps = {
+  assetId: string;
   onMessageChange: (message: string) => void;
   message: string;
   onNext?: () => void;
 };
 
-const MessageForm = ({ onMessageChange, message, onNext }: MessageFormProps) => {
+const MessageForm = ({ assetId, onMessageChange, message, onNext }: MessageFormProps) => {
+  const [generatedMessage, setGeneratedMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => onMessageChange(e.target.value),
     [onMessageChange]
+  );
+
+  const onSelectStyle = useCallback(
+    async (name: string, messageStyle: { id: string }) => {
+      if (name.length === 0) {
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        const res = await fetch('/.netlify/functions/generate-message', {
+          body: JSON.stringify({
+            asset_id: assetId,
+            message_style_id: messageStyle.id,
+          }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const mes = data.message.includes('[Name]')
+            ? data.message.replace('[Name]', name)
+            : `${data.message}\n\n- ${name}`;
+          setGeneratedMessage(mes);
+          onMessageChange(mes);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [assetId, onMessageChange]
+  );
+
+  const content = generatedMessage ? (
+    <>
+      <FormControl>
+        <Textarea
+          onChange={onChange}
+          placeholder="Write something nice! We'll print it on the inside of the card."
+          rows={15}
+          value={message}
+        />
+        <FormHelperText>Make sure to sign off with your name</FormHelperText>
+      </FormControl>
+      <Box alignItems="center" flexDirection="row" display="flex">
+        <Button disabled={message.length === 0} onClick={onNext}>
+          Review
+        </Button>
+      </Box>
+    </>
+  ) : (
+    <MessageCreator onSelect={onSelectStyle} loading={loading} />
   );
 
   return (
@@ -117,19 +178,7 @@ const MessageForm = ({ onMessageChange, message, onNext }: MessageFormProps) => 
           <Heading fontWeight="normal">Write a message</Heading>
           <Heading>for the inside of the card</Heading>
         </Box>
-        <FormControl>
-          <Textarea
-            onChange={onChange}
-            placeholder="Write something nice! We'll print it on the inside of the card."
-            value={message}
-          />
-          <FormHelperText>Make sure to sign off with your name</FormHelperText>
-        </FormControl>
-        <Box alignItems="center" flexDirection="row" display="flex">
-          <Button disabled={message.length === 0} onClick={onNext}>
-            Review
-          </Button>
-        </Box>
+        {content}
       </Box>
     </Box>
   );
@@ -162,7 +211,7 @@ const DetailsReview = ({
   return (
     <Box flexDirection="column" gap="12px" display="flex" paddingBottom="46px">
       <Heading fontWeight="normal">Here's your message</Heading>
-      <Textarea isReadOnly value={message} />
+      <Textarea isReadOnly rows={15} value={message} />
       <Heading fontWeight="normal">and we'll send it to</Heading>
       <Text>{name}</Text>
       <Text>{address}</Text>
@@ -290,7 +339,14 @@ export const AssetCheckout = () => {
             <Route element={<AnimationLayout />}>
               <Route
                 path="/"
-                element={<MessageForm onMessageChange={setMessage} message={message} onNext={onFinishedMessage} />}
+                element={
+                  <MessageForm
+                    assetId={id!}
+                    onMessageChange={setMessage}
+                    message={message}
+                    onNext={onFinishedMessage}
+                  />
+                }
               />
               <Route
                 path="/address"
