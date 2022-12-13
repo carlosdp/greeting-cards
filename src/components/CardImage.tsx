@@ -3,12 +3,12 @@ import { useCallback } from 'react';
 
 const sizes = {
   sm: {
-    width: '100px',
-    height: '200px',
+    width: '90px',
+    height: '130px',
   },
   md: {
     width: '200px',
-    height: '350px',
+    height: '300px',
   },
   lg: {
     width: '300px',

@@ -40,19 +40,19 @@ export const Landing = () => {
           backgroundColor="white"
           paddingBottom={{ base: '50px', lg: '32px' }}
         >
-          <Heading fontSize={{ base: '48px', md: '64px' }} textAlign="center">
-            Unique, personalized greeting cards, instantly
+          <Heading fontSize={{ base: '36px', lg: '64px' }} textAlign={{ base: 'left', lg: 'center' }}>
+            Unique, personal greeting cards, instantly
           </Heading>
-          <Heading as="h2" fontSize="24px" fontWeight="normal" textAlign="center">
+          <Center paddingTop="20px" paddingBottom="20px">
+            <Button onClick={onDesignCard} size="lg">
+              Try it free
+            </Button>
+          </Center>
+          <Heading as="h2" fontSize="24px" fontWeight="normal" textAlign={{ base: 'left', lg: 'center' }}>
             In just a few taps, impress your loved ones with a personalized greeting card, designed by you (and our
             robot team)
           </Heading>
         </Box>
-        <Center>
-          <Button onClick={onDesignCard} size="lg">
-            Try it free
-          </Button>
-        </Center>
       </Box>
       <Video />
     </Box>

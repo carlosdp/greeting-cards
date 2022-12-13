@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prefer-spread, unicorn/new-for-builtins, promise/no-nesting */
-import { Box, Center, Heading, Skeleton, Spinner } from '@chakra-ui/react';
+import { Box, Center, Heading, Skeleton, Spinner, useBreakpoint } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
@@ -47,6 +47,7 @@ export const CardGenerationRequest = () => {
   const client = useClient();
   const [request, setRequest] = useState<GenerationRequest | null>(null);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const breakpoint = useBreakpoint();
 
   useEffect(() => {
     if (id) {
@@ -118,9 +119,15 @@ export const CardGenerationRequest = () => {
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="32px">
       <Heading>Ok, how do these look?</Heading>
       <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
-      <Box flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
+      <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
         {assets.map((asset, i) => (
-          <CardImage key={i} id={asset.id} size="sm" imageUrl={asset.imageUrl} onSelectAsset={onSelectAsset} />
+          <CardImage
+            key={i}
+            id={asset.id}
+            size={['xl', '2xl'].includes(breakpoint) ? 'md' : 'sm'}
+            imageUrl={asset.imageUrl}
+            onSelectAsset={onSelectAsset}
+          />
         ))}
         {assets.length < request.expected_asset_count && (
           <Center width="100%" height="100%">

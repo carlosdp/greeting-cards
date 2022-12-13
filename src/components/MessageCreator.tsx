@@ -41,7 +41,6 @@ export const MessageCreator = ({ onSelect, loading }: MessageCreatorProps) => {
 
   return (
     <Box flexDirection="column" gap="12px" display="flex">
-      <Text>We can generate a message for you to get started!</Text>
       <FormControl>
         <FormLabel>What's your name?</FormLabel>
         <Input onChange={onNameChange} />

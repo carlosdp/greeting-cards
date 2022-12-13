@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormHelperText, Heading, Text, Textarea } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormHelperText, Heading, Text, Textarea, useBreakpoint } from '@chakra-ui/react';
 import { AddressElement } from '@stripe/react-stripe-js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
@@ -255,6 +255,7 @@ export const AssetCheckout = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [nameAndAddress, setNameAndAddress] = useState<NameAndAddress | null>(null);
   const [message, setMessage] = useState<string>('');
+  const breakpoint = useBreakpoint();
 
   useEffect(() => {
     if (location.pathname.includes('/review') && (!nameAndAddress || message.length === 0)) {
@@ -328,12 +329,12 @@ export const AssetCheckout = () => {
       width="100%"
       maxWidth="936px"
       padding="32px"
+      paddingBottom="120px"
     >
       <Box justifyContent="center" display="flex">
-        <CardImage imageUrl={imageUrl} />
+        <CardImage imageUrl={imageUrl} size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} />
       </Box>
       <Box flexDirection="column" gap="25px" display="flex">
-        <CheckoutStepHeader step={3} prompt="Fill in the name and address, and write your personalized message" />
         <AnimatePresence exitBeforeEnter>
           <Routes location={location} key={location.pathname}>
             <Route element={<AnimationLayout />}>
