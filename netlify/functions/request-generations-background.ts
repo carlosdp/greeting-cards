@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 
 const INSTRUCTION_TEMPLATE =
-  'I am designing a greeting card for {persona} for {style}. Some of her interests are: {interests}.\nThe cover cannot include any text, phrases, or lettering.\nWe need to make sure there is at least one element that makes it festive and match the occasion. Here are some Christmas elements we could include: snow, christmas tree, reindeer, santa, santa hat, christmas stocking, tree ornament, christmas star, snowman.\nThe top two examples of designs for a great, unique, and personalized greeting card cover for this client, in a numbered list, are:';
+  'I am designing a greeting card for {persona} for {style}. Some of her interests are: {interests}.\nThe cover cannot include any text, phrases, or lettering.\nWe need to make sure there is at least one element that makes it festive and match the occasion. Here are some Christmas elements we could include: snow, christmas tree, reindeer, santa, santa hat, christmas stocking, tree ornament, christmas star, snowman.\nThe top five examples of designs for a great, unique, and personalized greeting card cover for this client, in a numbered list, are:';
 const PROMPT_TEMPlATE = '{}, artstation, hd, dramatic lighting, cartoon, illustration, detailed';
 const NEGATIVE_PROMPT =
   'ugly, asymmetrical, gross, wrong, missing limbs, text, words, phrases, photo, watermark, missing eye';
@@ -98,7 +98,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
     PROMPT_TEMPlATE.replace('{}', promptInsert.charAt(0).toLowerCase() + promptInsert.slice(1).replace('.', ''))
   );
 
-  for (let i = 0; i < assetGenerationRequest.expected_asset_count / 2; i++) {
+  for (let i = 0; i < assetGenerationRequest.expected_asset_count / 5; i++) {
     for (const prompt of prompts) {
       let tries = 0;
 
