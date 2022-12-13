@@ -43,6 +43,7 @@ const AnimationLayout = () => {
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
+      style={{ width: '100%' }}
     >
       <Outlet />
     </motion.div>
@@ -72,7 +73,7 @@ function App() {
         paddingLeft="32px"
         paddingBottom="36px"
       >
-        <Box alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="1240px">
+        <Box zIndex="docked" alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="1240px">
           <Brand />
           <Box marginLeft="auto"></Box>
         </Box>
