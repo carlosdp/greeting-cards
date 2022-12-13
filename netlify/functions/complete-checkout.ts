@@ -41,13 +41,15 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
     const coverImageUrl = await client.storage.from('assets').createSignedUrl(asset.storage_key, 60 * 60 * 12);
 
+    const scale = order.product === 'greeting_card' ? 2105 / 768 : 2025 / 768;
+
     const res = await axios.post(
       'https://api.replicate.com/v1/predictions',
       {
         version: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
         input: {
           image: coverImageUrl.data?.signedUrl,
-          scale: 2105 / 768,
+          scale,
         },
         webhook_completed: `${process.env.URL}/.netlify/functions/generate-print-job-background?orderId=${orderId}`,
       },

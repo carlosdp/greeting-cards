@@ -4,13 +4,13 @@ import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 
 const INSTRUCTION_TEMPLATE =
-  'I am designing a greeting card for {persona} for {style}. Some of her interests are: {interests}.\nThe cover cannot include any text, phrases, or lettering.\nWe need to make sure there is at least one element that makes it festive and match the occasion. Here are some Christmas elements we could include: snow, christmas tree, reindeer, santa, santa hat, christmas stocking, tree ornament, christmas star, snowman.\nThe top five examples of designs for a great, unique, and personalized greeting card cover for this client, in a numbered list, are:';
+  'I am designing a greeting card for {persona}. Some of her interests are: {interests}.\nThe cover cannot include any text, phrases, or lettering.\nWe need to make sure there is at least one element that makes it festive and match the occasion. {occasion}\nThe top five examples of designs for a great, unique, and personalized greeting card cover for this person, in a numbered list, are:';
 const PROMPT_TEMPlATE = '{}, artstation, hd, dramatic lighting, cartoon, illustration, detailed';
 const NEGATIVE_PROMPT =
-  'ugly, asymmetrical, gross, wrong, missing limbs, text, words, phrases, photo, watermark, missing eye';
+  'ugly, asymmetrical, gross, wrong, missing limbs, text, words, phrases, photo, watermark, missing eye, creepy, weird, disfigured';
 
 const handler: BackgroundHandler = async (event: HandlerEvent, _context: HandlerContext) => {
-  const { assetGenerationRequestId } = JSON.parse(event.body || '');
+  const { assetGenerationRequestId, cardType } = JSON.parse(event.body || '');
 
   if (!assetGenerationRequestId) {
     throw new Error('assetGenerationRequestId is required');
@@ -30,6 +30,16 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
 
   if (!assetGenerationRequest) {
     throw new Error('asset generation request not found');
+  }
+
+  const { data: occasion } = await client
+    .from('occasions')
+    .select('prompt')
+    .eq('id', assetGenerationRequest.occasion_id)
+    .single();
+
+  if (!occasion) {
+    throw new Error('occasion not found');
   }
 
   const { data: persona } = await client
@@ -69,7 +79,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
     'https://api.openai.com/v1/completions',
     {
       model: 'text-davinci-003',
-      prompt: INSTRUCTION_TEMPLATE.replace('{style}', assetGenerationRequest.style)
+      prompt: INSTRUCTION_TEMPLATE.replace('{occasion}', occasion.prompt)
         .replace('{persona}', persona.prompt)
         .replace('{interests}', interestPrompt),
       max_tokens: 256,
@@ -98,6 +108,8 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
     PROMPT_TEMPlATE.replace('{}', promptInsert.charAt(0).toLowerCase() + promptInsert.slice(1).replace('.', ''))
   );
 
+  const resolution = cardType === 'landscape' ? { width: 576, height: 768 } : { width: 768, height: 576 };
+
   for (let i = 0; i < assetGenerationRequest.expected_asset_count / 5; i++) {
     for (const prompt of prompts) {
       let tries = 0;
@@ -113,13 +125,12 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
             input: {
               prompt,
               negative_prompt: NEGATIVE_PROMPT,
-              width: 576,
-              height: 768,
               prompt_strength: 0.8,
               num_outputs: 2,
               num_inference_steps: 50,
               guidance_scale: 7.5,
               scheduler: 'K_EULER',
+              ...resolution,
             },
             webhook_completed: `${process.env.URL}/.netlify/functions/complete-generation-background?assetGenerationRequestId=${assetGenerationRequestId}`,
           },

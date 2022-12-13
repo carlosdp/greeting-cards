@@ -13,11 +13,21 @@ const stripe = new Stripe(
 
 const BASE_URL = process.env.URL ?? 'http://localhost:3000';
 const GREETING_CARD_PRICE_ID = process.env.GREETING_CARD_PRICE_ID ?? 'price_1MC5LyIsiWplaJ87HhTpaHOg';
+const HANDWRITTEN_CARD_PRICE_ID = process.env.HANDWRITTEN_CARD_PRICE_ID ?? 'price_1MEg39IsiWplaJ87Ey7Mk9Kf';
 
 const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
   const { order } = JSON.parse(event.body || '');
 
   const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+  const { data: asset } = await client.from('assets').select('product').eq('id', order.asset_id).single();
+
+  if (!asset) {
+    return {
+      statusCode: 400,
+      body: 'could not find asset',
+    };
+  }
 
   const { data: createdOrder, error } = await client
     .from('orders')
@@ -31,6 +41,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       state: order.state,
       postal_code: order.postal_code,
       country: order.country,
+      product: asset.product,
     })
     .select()
     .single();
@@ -45,7 +56,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     customer_creation: 'always',
     line_items: [
       {
-        price: GREETING_CARD_PRICE_ID,
+        price: order.product === 'greeting_card' ? GREETING_CARD_PRICE_ID : HANDWRITTEN_CARD_PRICE_ID,
         quantity: 1,
       },
     ],

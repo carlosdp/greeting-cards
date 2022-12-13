@@ -15,11 +15,16 @@ import { useClient } from 'react-supabase';
 
 import { CardImage } from './CardImage';
 
+type Asset = {
+  image_url: string;
+  product: string;
+};
+
 export const AssetDetails = () => {
   const { id } = useParams<{ requestId: string; id: string }>();
   const client = useClient();
   const navigate = useNavigate();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [asset, setAsset] = useState<Asset | null>(null);
   const breakpoint = useBreakpoint();
 
   useEffect(() => {
@@ -33,7 +38,7 @@ export const AssetDetails = () => {
         .then(async res => {
           const url = await client.storage.from('assets').createSignedUrl(res.data.storage_key, 120);
           if (url.data) {
-            setImageUrl(url.data.signedUrl);
+            setAsset({ image_url: url.data.signedUrl, product: res.data.product });
           }
         }, console.error);
     }
@@ -57,7 +62,7 @@ export const AssetDetails = () => {
         <Heading>Nice!</Heading>
       </Box>
       <Center>
-        <CardImage size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} imageUrl={imageUrl} />
+        <CardImage size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} imageUrl={asset?.image_url} />
       </Center>
       <Box flexDirection={{ base: 'row', lg: 'column' }} gap="25px" display="flex" width="100%">
         <Box display={{ base: 'none', lg: 'block' }}>
@@ -66,7 +71,7 @@ export const AssetDetails = () => {
         <Box flexDirection="column" display="flex">
           <Stat flexGrow={0}>
             <StatLabel>Price</StatLabel>
-            <StatNumber>$9.99</StatNumber>
+            <StatNumber>{asset?.product === 'greeting_card' ? '$9.99' : '$14.99'}</StatNumber>
             <StatHelpText>incl. printing & shipping</StatHelpText>
           </Stat>
           <Box alignItems="center" display="flex">

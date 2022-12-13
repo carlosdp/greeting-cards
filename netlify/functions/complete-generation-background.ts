@@ -14,21 +14,34 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
 
   const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
+  const { data: assetGenerationRequest } = await client
+    .from('asset_generation_requests')
+    .select('*')
+    .eq('id', assetGenerationRequestId)
+    .single();
+
+  if (!assetGenerationRequest) {
+    throw new Error('asset generation request not found is required');
+  }
+
   for (let i = 0; i < webhookData.output.length; i++) {
     const output = webhookData.output[i];
 
     const res = await axios({ url: output, method: 'GET', responseType: 'arraybuffer' });
 
-    const width = 576;
-    const targetWidth = Math.floor(768 * 0.709_738_717_3);
-    const diff = width - targetWidth;
+    const width = assetGenerationRequest.product === 'handwritten' ? 768 : 576;
+    const height = assetGenerationRequest.product === 'handwritten' ? 576 : 768;
+    const targetWidth = assetGenerationRequest.product === 'handwritten' ? 768 : Math.floor(768 * 0.709_738_717_3);
+    const targetHeight = assetGenerationRequest.product === 'handwritten' ? Math.floor(768 * 0.703_703_703_7) : 768;
+    const widthDiff = width - targetWidth;
+    const heightDiff = height - targetHeight;
 
     const image = await sharp(res.data)
       .extract({
-        left: Math.floor(diff / 2),
-        top: 0,
+        left: Math.floor(widthDiff / 2),
+        top: Math.floor(heightDiff / 2),
         width: targetWidth,
-        height: 768,
+        height: targetHeight,
       })
       .png()
       .toBuffer();
@@ -46,6 +59,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
       asset_generation_request_id: assetGenerationRequestId,
       storage_key: storageKey,
       prompt: webhookData.input.prompt,
+      product: assetGenerationRequest.product,
     });
   }
 };
