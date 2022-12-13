@@ -50,7 +50,7 @@ export const Landing = () => {
         </Box>
         <Center>
           <Button onClick={onDesignCard} size="lg">
-            Design a Card
+            Try it free
           </Button>
         </Center>
       </Box>
