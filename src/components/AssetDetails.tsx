@@ -66,7 +66,7 @@ export const AssetDetails = () => {
         <Box flexDirection="column" display="flex">
           <Stat flexGrow={0}>
             <StatLabel>Price</StatLabel>
-            <StatNumber>$10</StatNumber>
+            <StatNumber>$9.99</StatNumber>
             <StatHelpText>incl. printing & shipping</StatHelpText>
           </Stat>
           <Box alignItems="center" display="flex">
