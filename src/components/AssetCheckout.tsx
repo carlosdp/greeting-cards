@@ -8,6 +8,7 @@ import { useClient } from 'react-supabase';
 import { CardImage } from './CardImage';
 import { CheckoutStepHeader } from './CheckoutStepHeader';
 import { MessageCreator } from './MessageCreator';
+import { ScreenContainer } from './ScreenContainer';
 
 const pageVariants = {
   initial: {
@@ -322,46 +323,45 @@ export const AssetCheckout = () => {
   }, [nameAndAddress, message, id]);
 
   return (
-    <Box
-      flexDirection={{ base: 'column', lg: 'row' }}
-      gap={{ base: '12px', lg: '46px' }}
-      display="flex"
-      width="100%"
-      maxWidth="936px"
-      padding="32px"
-      paddingBottom="120px"
-    >
-      <Box justifyContent="center" display="flex">
-        <CardImage imageUrl={imageUrl} size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} />
+    <ScreenContainer>
+      <Box
+        flexDirection={{ base: 'column', lg: 'row' }}
+        gap={{ base: '12px', lg: '46px' }}
+        display="flex"
+        paddingBottom="120px"
+      >
+        <Box justifyContent="center" display="flex">
+          <CardImage imageUrl={imageUrl} size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} />
+        </Box>
+        <Box flexDirection="column" gap="25px" display="flex">
+          <AnimatePresence exitBeforeEnter>
+            <Routes location={location} key={location.pathname}>
+              <Route element={<AnimationLayout />}>
+                <Route
+                  path="/"
+                  element={
+                    <MessageForm
+                      assetId={id!}
+                      onMessageChange={setMessage}
+                      message={message}
+                      onNext={onFinishedMessage}
+                    />
+                  }
+                />
+                <Route
+                  path="/address"
+                  element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
+                />
+                <Route
+                  path="/review"
+                  element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
+                />
+                <Route path="/success" element={<Success />} />
+              </Route>
+            </Routes>
+          </AnimatePresence>
+        </Box>
       </Box>
-      <Box flexDirection="column" gap="25px" display="flex">
-        <AnimatePresence exitBeforeEnter>
-          <Routes location={location} key={location.pathname}>
-            <Route element={<AnimationLayout />}>
-              <Route
-                path="/"
-                element={
-                  <MessageForm
-                    assetId={id!}
-                    onMessageChange={setMessage}
-                    message={message}
-                    onNext={onFinishedMessage}
-                  />
-                }
-              />
-              <Route
-                path="/address"
-                element={<NameAndAddressForm onAddressChange={setNameAndAddress} onNext={onFinishedNameAndAddress} />}
-              />
-              <Route
-                path="/review"
-                element={<DetailsReview nameAndAddress={nameAndAddress!} message={message} onNext={onFinalize} />}
-              />
-              <Route path="/success" element={<Success />} />
-            </Route>
-          </Routes>
-        </AnimatePresence>
-      </Box>
-    </Box>
+    </ScreenContainer>
   );
 };

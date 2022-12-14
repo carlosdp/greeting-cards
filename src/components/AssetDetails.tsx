@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useClient } from 'react-supabase';
 
 import { CardImage } from './CardImage';
+import { ScreenContainer } from './ScreenContainer';
 
 type Asset = {
   image_url: string;
@@ -49,36 +50,30 @@ export const AssetDetails = () => {
   }, [id, navigate]);
 
   return (
-    <Box
-      flexDirection={{ base: 'column', lg: 'row' }}
-      gap={{ base: 0, lg: '46px' }}
-      display="flex"
-      width="100%"
-      maxWidth="936px"
-      padding="32px"
-      paddingTop={0}
-    >
-      <Box display={{ base: 'block', lg: 'none' }} paddingBottom="12px">
-        <Heading>Nice!</Heading>
-      </Box>
-      <Center>
-        <CardImage size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} imageUrl={asset?.image_url} />
-      </Center>
-      <Box flexDirection={{ base: 'row', lg: 'column' }} gap="25px" display="flex" width="100%">
-        <Box display={{ base: 'none', lg: 'block' }}>
+    <ScreenContainer>
+      <Box flexDirection={{ base: 'column', lg: 'row' }} gap={{ base: 0, lg: '46px' }} display="flex" paddingTop={0}>
+        <Box display={{ base: 'block', lg: 'none' }} paddingBottom="12px">
           <Heading>Nice!</Heading>
         </Box>
-        <Box flexDirection="column" display="flex">
-          <Stat flexGrow={0}>
-            <StatLabel>Price</StatLabel>
-            <StatNumber>{asset?.product === 'greeting_card' ? '$9.99' : '$14.99'}</StatNumber>
-            <StatHelpText>incl. printing & shipping</StatHelpText>
-          </Stat>
-          <Box alignItems="center" display="flex">
-            <Button onClick={checkout}>Write Message</Button>
+        <Center>
+          <CardImage size={['xl', '2xl'].includes(breakpoint) ? 'lg' : 'md'} imageUrl={asset?.image_url} />
+        </Center>
+        <Box flexDirection={{ base: 'row', lg: 'column' }} gap="25px" display="flex" width="100%">
+          <Box display={{ base: 'none', lg: 'block' }}>
+            <Heading>Nice!</Heading>
+          </Box>
+          <Box flexDirection="column" display="flex">
+            <Stat flexGrow={0}>
+              <StatLabel>Price</StatLabel>
+              <StatNumber>{asset?.product === 'greeting_card' ? '$9.99' : '$14.99'}</StatNumber>
+              <StatHelpText>incl. printing & shipping</StatHelpText>
+            </Stat>
+            <Box alignItems="center" display="flex">
+              <Button onClick={checkout}>Write Message</Button>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </ScreenContainer>
   );
 };
