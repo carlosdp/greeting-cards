@@ -1,15 +1,16 @@
-import { Box, Heading, useDisclosure, Fade } from '@chakra-ui/react';
+import { Box, Heading, useDisclosure, Fade, useMediaQuery } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { CardTypeSelector } from './CardTypeSelector';
 
 const Video = () => {
   const { isOpen, onOpen } = useDisclosure();
+  const [isMobile] = useMediaQuery('(max-width: 768px)');
 
   return (
     <Fade in={isOpen}>
       <Box as="video" width="100%" border="none" autoPlay loop muted onCanPlay={onOpen} playsInline>
-        <Box as="source" src="/images/landing-animation.mp4" type="video/mp4" />
+        <Box as="source" src={`/images/landing-animation${isMobile ? '-1080' : ''}.mp4`} type="video/mp4" />
       </Box>
     </Fade>
   );
