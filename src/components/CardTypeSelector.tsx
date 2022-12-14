@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Image, Text } from '@chakra-ui/react';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 

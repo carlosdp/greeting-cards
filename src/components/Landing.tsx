@@ -1,6 +1,5 @@
-import { Box, Heading, Center, Button, useDisclosure, Fade } from '@chakra-ui/react';
-import { useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Heading, useDisclosure, Fade } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 import { CardTypeSelector } from './CardTypeSelector';
 
@@ -17,8 +16,6 @@ const Video = () => {
 };
 
 export const Landing = () => {
-  const navigate = useNavigate();
-
   useEffect(() => {
     window.document.querySelector('html')?.classList.add('elations-purple-background');
     window.document.querySelector('body')?.classList.add('elations-purple-background');
@@ -30,10 +27,6 @@ export const Landing = () => {
       window.document.querySelector('#elations-brand')?.classList.remove('elations-brand-dark');
     };
   }, []);
-
-  const onDesignCard = useCallback(() => {
-    navigate('/create');
-  }, [navigate]);
 
   return (
     <Box
