@@ -2,6 +2,8 @@ import { Box, Heading, Center, Button, useDisclosure, Fade } from '@chakra-ui/re
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { CardTypeSelector } from './CardTypeSelector';
+
 const Video = () => {
   const { isOpen, onOpen } = useDisclosure();
 
@@ -80,11 +82,14 @@ export const Landing = () => {
         >
           <Heading fontSize={{ base: '36px', lg: '64px' }}>Unique, personal greeting cards, instantly</Heading>
           <Box paddingTop="20px" paddingBottom="20px">
-            <Button onClick={onDesignCard} size="lg">
-              Try it free
-            </Button>
+            <CardTypeSelector />
           </Box>
-          <Heading as="h2" fontSize={{ base: '18px', md: '24px' }} fontWeight="normal">
+          <Heading
+            as="h2"
+            display={{ base: 'none', md: 'block' }}
+            fontSize={{ base: '18px', lg: '24px' }}
+            fontWeight="normal"
+          >
             In just a few taps, impress your loved ones with a personalized greeting card, designed by you (and our
             robot team)
           </Heading>
