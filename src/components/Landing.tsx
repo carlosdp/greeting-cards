@@ -86,7 +86,9 @@ export const Landing = () => {
           color="white"
           paddingBottom={{ base: '50px', lg: '32px' }}
         >
-          <Heading fontSize={{ base: '36px', lg: '64px' }}>Unique, personal greeting cards, instantly</Heading>
+          <Heading fontSize={{ base: '36px', lg: '64px' }}>
+            AI Designed Greeting Cards, printed & mailed for you
+          </Heading>
           <Box paddingTop="20px" paddingBottom="20px">
             <CardTypeSelector />
           </Box>
@@ -96,8 +98,8 @@ export const Landing = () => {
             fontSize={{ base: '18px', lg: '24px' }}
             fontWeight="normal"
           >
-            In just a few taps, impress your loved ones with a personalized greeting card, designed by you (and our
-            robot team)
+            In just a few taps, impress your friends and loved ones with a personalized greeting card, designed by you
+            (and our AI)
           </Heading>
         </Box>
       </Box>
