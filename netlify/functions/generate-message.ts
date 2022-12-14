@@ -22,7 +22,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   const { data: assetGenerationRequest } = await client
     .from('asset_generation_requests')
-    .select('persona_id, style')
+    .select('persona_id, occasion_id')
     .eq('id', asset.asset_generation_request_id)
     .single();
 
@@ -44,6 +44,16 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       statusCode: 400,
       body: 'persona not found',
     };
+  }
+
+  const { data: occasion } = await client
+    .from('occasions')
+    .select('prompt')
+    .eq('id', assetGenerationRequest.occasion_id)
+    .single();
+
+  if (!occasion) {
+    throw new Error('occasion not found');
   }
 
   const { data: interest_ids } = await client
@@ -84,7 +94,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     'https://api.openai.com/v1/completions',
     {
       model: 'text-davinci-003',
-      prompt: INSTRUCTION_TEMPLATE.replace('{occasion}', assetGenerationRequest.style)
+      prompt: INSTRUCTION_TEMPLATE.replace('{occasion}', occasion.prompt)
         .replace('{persona}', persona.prompt)
         .replace('{interests}', interestPrompt)
         .replace('{style}', stylePrompt),
