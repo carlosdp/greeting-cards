@@ -6,7 +6,6 @@ import { Route, Routes, useLocation, useNavigate, useParams, Outlet } from 'reac
 import { useClient } from 'react-supabase';
 
 import { CardImage } from './CardImage';
-import { CheckoutStepHeader } from './CheckoutStepHeader';
 import { MessageCreator } from './MessageCreator';
 import { ScreenContainer } from './ScreenContainer';
 
