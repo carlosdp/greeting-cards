@@ -18,7 +18,7 @@ export const CardGenerator = () => {
   const [occasion, setOccasion] = useState<string | null>(null);
 
   useEffect(() => {
-    if (location.pathname.includes('/occasion') && !searchParams.has('cardType')) {
+    if (!searchParams.has('cardType')) {
       navigate('/');
     }
 
@@ -33,17 +33,17 @@ export const CardGenerator = () => {
   const onSelectOccasion = useCallback(
     (occ: string) => {
       setOccasion(occ);
-      navigate('/create/persona');
+      navigate(`/create/persona?cardType=${searchParams.get('cardType')}`);
     },
-    [navigate]
+    [navigate, searchParams]
   );
 
   const onSelectPersona = useCallback(
     (selectedPersona: Persona) => {
       setPersona(selectedPersona);
-      navigate('/create/interests');
+      navigate(`/create/interests?cardType=${searchParams.get('cardType')}`);
     },
-    [navigate]
+    [navigate, searchParams]
   );
 
   const onSelectInterests = useCallback(

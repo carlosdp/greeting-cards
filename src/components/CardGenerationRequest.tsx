@@ -6,6 +6,7 @@ import { useClient } from 'react-supabase';
 
 import { CardImage } from './CardImage';
 import { CheckoutStepHeader } from './CheckoutStepHeader';
+import { ScreenContainer } from './ScreenContainer';
 
 const Loading = () => {
   useEffect(() => {
@@ -21,13 +22,15 @@ const Loading = () => {
   }, []);
 
   return (
-    <Box justifyContent="center" flexDirection="column" gap="46px" display="flex" minHeight="80vh" padding="32px">
-      <Box>
-        <Heading fontWeight="normal">Give us a minute...</Heading>
-        <Heading>Our robot elves are designing your cards</Heading>
+    <ScreenContainer>
+      <Box justifyContent="center" flexDirection="column" gap="46px" display="flex" minHeight="80vh">
+        <Box>
+          <Heading fontWeight="normal">Give us a minute...</Heading>
+          <Heading>Our robot elves are designing your cards</Heading>
+        </Box>
+        <Spinner size="xl" thickness="4px" />
       </Box>
-      <Spinner size="xl" thickness="4px" />
-    </Box>
+    </ScreenContainer>
   );
 };
 
@@ -116,7 +119,7 @@ export const CardGenerationRequest = () => {
   }
 
   return (
-    <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="32px">
+    <ScreenContainer>
       <Heading>Ok, how do these look?</Heading>
       <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
       <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
@@ -135,6 +138,6 @@ export const CardGenerationRequest = () => {
           </Center>
         )}
       </Box>
-    </Box>
+    </ScreenContainer>
   );
 };

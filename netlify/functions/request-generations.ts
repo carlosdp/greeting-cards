@@ -15,7 +15,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       description: 'old',
       style: occasion,
       occasion_id: occasion,
-      expected_asset_count: 20,
+      expected_asset_count: process.env.NODE_ENV === 'development' ? 10 : 20,
       product: card_type,
     })
     .select()
@@ -45,7 +45,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
   await axios.post(`${process.env.URL}/.netlify/functions/request-generations-background`, {
     assetGenerationRequestId: request.id,
-    cardType: card_type === 'landscape' ? 'landscape' : 'portrait',
+    cardType: request.product,
   });
 
   return {

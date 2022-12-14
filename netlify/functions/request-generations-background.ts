@@ -108,7 +108,7 @@ const handler: BackgroundHandler = async (event: HandlerEvent, _context: Handler
     PROMPT_TEMPlATE.replace('{}', promptInsert.charAt(0).toLowerCase() + promptInsert.slice(1).replace('.', ''))
   );
 
-  const resolution = cardType === 'landscape' ? { width: 576, height: 768 } : { width: 768, height: 576 };
+  const resolution = cardType === 'greeting_card' ? { width: 576, height: 768 } : { width: 768, height: 576 };
 
   for (let i = 0; i < assetGenerationRequest.expected_asset_count / 5; i++) {
     for (const prompt of prompts) {
