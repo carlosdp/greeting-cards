@@ -1,6 +1,4 @@
 import { Box, Button, Image, Text } from '@chakra-ui/react';
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const CARD_TYPES = [
   {
@@ -17,16 +15,12 @@ const CARD_TYPES = [
   },
 ];
 
-export const CardTypeSelector = () => {
-  const navigate = useNavigate();
+export type CardTypeSelectorProps = {
+  onSelect: (cardType: string) => void;
+  isLoading?: boolean;
+};
 
-  const onSelect = useCallback(
-    (cardType: string) => {
-      navigate(`/create?cardType=${cardType}`);
-    },
-    [navigate]
-  );
-
+export const CardTypeSelector = ({ onSelect, isLoading }: CardTypeSelectorProps) => {
   return (
     <Box flexDirection="column" gap="46px" display="flex" width="100%" maxWidth="936px" padding="20px">
       <Box
@@ -44,6 +38,7 @@ export const CardTypeSelector = () => {
             display="flex"
             padding="36px"
             colorScheme="blackAlpha"
+            isLoading={isLoading}
             onClick={() => onSelect(cardType.id)}
             size={{ base: 'sm', lg: 'lg' }}
             variant="solid"

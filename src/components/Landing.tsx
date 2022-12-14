@@ -1,7 +1,6 @@
-import { Box, Heading, useDisclosure, Fade, useMediaQuery } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
-
-import { CardTypeSelector } from './CardTypeSelector';
+import { Box, Heading, useDisclosure, Fade, useMediaQuery, Button } from '@chakra-ui/react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Video = () => {
   const { isOpen, onOpen } = useDisclosure();
@@ -29,6 +28,8 @@ const Video = () => {
 };
 
 export const Landing = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.document.querySelector('html')?.classList.add('elations-purple-background');
     window.document.querySelector('body')?.classList.add('elations-purple-background');
@@ -40,6 +41,10 @@ export const Landing = () => {
       window.document.querySelector('#elations-brand')?.classList.remove('elations-brand-dark');
     };
   }, []);
+
+  const onCreate = useCallback(() => {
+    navigate('/create');
+  }, [navigate]);
 
   return (
     <Box
@@ -90,14 +95,11 @@ export const Landing = () => {
             AI Designed Greeting Cards, printed & mailed for you
           </Heading>
           <Box paddingTop="20px" paddingBottom="20px">
-            <CardTypeSelector />
+            <Button onClick={onCreate} size="lg">
+              Try it free
+            </Button>
           </Box>
-          <Heading
-            as="h2"
-            display={{ base: 'none', md: 'block' }}
-            fontSize={{ base: '18px', lg: '24px' }}
-            fontWeight="normal"
-          >
+          <Heading as="h2" fontSize={{ base: '18px', lg: '24px' }} fontWeight="normal">
             In just a few taps, impress your friends and loved ones with a personalized greeting card, designed by you
             (and our AI)
           </Heading>
