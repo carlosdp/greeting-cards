@@ -56,7 +56,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     customer_creation: 'always',
     line_items: [
       {
-        price: order.product === 'greeting_card' ? GREETING_CARD_PRICE_ID : HANDWRITTEN_CARD_PRICE_ID,
+        price: createdOrder.product === 'greeting_card' ? GREETING_CARD_PRICE_ID : HANDWRITTEN_CARD_PRICE_ID,
         quantity: 1,
       },
     ],
