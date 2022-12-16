@@ -175,7 +175,7 @@ export const TrainSetUpload = () => {
           </Box>
         </Box>
         <Box>
-          <Button isLoading={loading} onClick={onSubmit}>
+          <Button isDisabled={files.length < 5} isLoading={loading} onClick={onSubmit}>
             Create my cards
           </Button>
         </Box>
