@@ -121,7 +121,7 @@ export const CardGenerationRequest = () => {
   return (
     <ScreenContainer>
       <Heading>Ok, how do these look?</Heading>
-      <CheckoutStepHeader step={2} prompt="Choose the card you love the most" />
+      <CheckoutStepHeader step={2}>Choose the card you love the most</CheckoutStepHeader>
       <Box justifyContent="center" flexWrap="wrap" flexDirection="row" flex={1} gap="10px" display="flex">
         {assets.map((asset, i) => (
           <CardImage

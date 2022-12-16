@@ -90,7 +90,7 @@ export const CardGenerator = () => {
 
   return (
     <ScreenContainer>
-      <CheckoutStepHeader step={1} prompt="Tell us about who will be receiving this card" />
+      <CheckoutStepHeader step={1}>Tell us about who will be receiving this card</CheckoutStepHeader>
       <Routes>
         <Route path="/" element={<OccasionSelector onSelect={onSelectOccasion} />} />
         <Route path="/persona" element={<PersonaSelector onSelect={onSelectPersona} />} />
