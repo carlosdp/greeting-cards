@@ -161,6 +161,7 @@ export const TrainSetUpload = () => {
                   <Image
                     key={file.name}
                     maxWidth="50px"
+                    height="fit-content"
                     onLoad={() => URL.revokeObjectURL(file.preview)}
                     src={file.preview}
                   />
