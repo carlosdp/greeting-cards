@@ -1,6 +1,8 @@
-import { Box, Heading, useDisclosure, Fade, useMediaQuery, Button } from '@chakra-ui/react';
+import { Box, Heading, useDisclosure, Fade, useMediaQuery, Button, Image, Center } from '@chakra-ui/react';
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { CheckoutStepHeader } from './CheckoutStepHeader';
 
 const Video = () => {
   const { isOpen, onOpen } = useDisclosure();
@@ -30,17 +32,17 @@ const Video = () => {
 export const Landing = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    window.document.querySelector('html')?.classList.add('elations-purple-background');
-    window.document.querySelector('body')?.classList.add('elations-purple-background');
-    window.document.querySelector('#elations-brand')?.classList.add('elations-brand-dark');
+  // useEffect(() => {
+  //   window.document.querySelector('html')?.classList.add('elations-purple-background');
+  //   window.document.querySelector('body')?.classList.add('elations-purple-background');
+  //   window.document.querySelector('#elations-brand')?.classList.add('elations-brand-dark');
 
-    return () => {
-      window.document.querySelector('html')?.classList.remove('elations-purple-background');
-      window.document.querySelector('body')?.classList.remove('elations-purple-background');
-      window.document.querySelector('#elations-brand')?.classList.remove('elations-brand-dark');
-    };
-  }, []);
+  //   return () => {
+  //     window.document.querySelector('html')?.classList.remove('elations-purple-background');
+  //     window.document.querySelector('body')?.classList.remove('elations-purple-background');
+  //     window.document.querySelector('#elations-brand')?.classList.remove('elations-brand-dark');
+  //   };
+  // }, []);
 
   const onCreate = useCallback(() => {
     navigate('/create');
@@ -48,61 +50,45 @@ export const Landing = () => {
 
   return (
     <Box
-      flexDirection="column"
-      gap={{ base: '12px', lg: '46px' }}
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="row"
       display="flex"
-      width="100%"
-      minHeight="100vh"
-      marginTop="-108px"
-      backgroundColor="rgb(73,60,114)"
+      minHeight="60vh"
+      paddingRight="32px"
+      paddingLeft="32px"
     >
-      <Video />
-      <Box
-        position="absolute"
-        left={0}
-        justifyContent="flex-end"
-        flexDirection="row"
-        display="flex"
-        width="100%"
-        maxWidth={{
-          base: '500px',
-          lg: '800px',
-          xl: '900px',
-          '2xl': '1000px',
-        }}
-        margin={{
-          base: '90px',
-          md: '90px',
-          lg: '90px',
-          xl: '100px',
-          '2xl': '240px',
-        }}
-        marginLeft={{
-          base: '32px',
-          md: '32px',
-          xl: '130px',
-          '2xl': '320px',
-        }}
-      >
-        <Box
-          flexDirection="column"
-          gap="12px"
-          display="flex"
-          color="white"
-          paddingBottom={{ base: '50px', lg: '32px' }}
-        >
-          <Heading fontSize={{ base: '36px', lg: '64px' }}>
-            AI Designed Greeting Cards, printed & mailed for you
-          </Heading>
-          <Box paddingTop="20px" paddingBottom="20px">
+      <Box flexDirection="column" gap="25px" display="flex" width="100%" maxWidth="1300px">
+        <Box flexDirection="column" gap="12px" display="flex" width="100%" paddingBottom={{ base: '50px', lg: '32px' }}>
+          <Heading fontSize={{ base: '36px', lg: '64px' }}>Send Personalized Greeting Cards, easy</Heading>
+          <Center paddingTop="20px" paddingBottom="20px">
             <Button onClick={onCreate} size="lg">
-              Try it free
+              Create a Card
             </Button>
-          </Box>
+          </Center>
           <Heading as="h2" fontSize={{ base: '18px', lg: '24px' }} fontWeight="normal">
-            In just a few taps, impress your friends and loved ones with a personalized greeting card, designed by you
-            (and our AI)
+            With a few photos and a couple taps, create and mail a personalized greeting card designed specifically for
+            your friend or family member.
           </Heading>
+        </Box>
+        <Box
+          alignItems={{ base: 'center', lg: 'flex-start' }}
+          justifyContent={{ base: 'flex-start', lg: 'space-around' }}
+          flexDirection={{ base: 'column', lg: 'row' }}
+          display="flex"
+        >
+          <Box flexDirection="column" gap="18px" display="flex" maxWidth="300px">
+            <CheckoutStepHeader step={1}>Upload 10-20 photos</CheckoutStepHeader>
+            <Image maxWidth="300px" src="/images/uploaded-images.png" />
+          </Box>
+          <Box flexDirection="column" gap="18px" display="flex" maxWidth="300px">
+            <CheckoutStepHeader step={2}>Choose a design you like</CheckoutStepHeader>
+            <Image maxWidth="300px" src="/images/generated-images.png" />
+          </Box>
+          <Box flexDirection="column" gap="18px" display="flex" maxWidth="300px">
+            <CheckoutStepHeader step={3}>Write a message, and we'll print & mail it for you!</CheckoutStepHeader>
+            <Image maxWidth="300px" src="/images/mailbox.png" />
+          </Box>
         </Box>
       </Box>
     </Box>

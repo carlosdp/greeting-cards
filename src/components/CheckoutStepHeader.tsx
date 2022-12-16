@@ -1,11 +1,12 @@
 import { Box, Text } from '@chakra-ui/react';
+import React from 'react';
 
 export type CheckoutStepHeaderProps = {
   step: number;
-  prompt: string;
+  children: React.ReactNode;
 };
 
-export const CheckoutStepHeader = ({ step, prompt }: CheckoutStepHeaderProps) => {
+export const CheckoutStepHeader = ({ step, children }: CheckoutStepHeaderProps) => {
   return (
     <Box alignItems="center" flexDirection="row" gap="10px" display="flex">
       <Box
@@ -23,7 +24,7 @@ export const CheckoutStepHeader = ({ step, prompt }: CheckoutStepHeaderProps) =>
       >
         {step}
       </Box>
-      <Text fontSize="18px">{prompt}</Text>
+      <Text fontSize="18px">{children}</Text>
     </Box>
   );
 };

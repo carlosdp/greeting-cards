@@ -73,7 +73,7 @@ function App() {
         paddingLeft="32px"
         paddingBottom="36px"
       >
-        <Box zIndex="docked" alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="1240px">
+        <Box zIndex="docked" alignItems="center" flexDirection="row" display="flex" width="100%" maxWidth="1300px">
           <Brand />
           <Box marginLeft="auto"></Box>
         </Box>
