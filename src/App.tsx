@@ -8,7 +8,9 @@ import { AssetDetails } from './components/AssetDetails';
 import { Brand } from './components/Brand';
 import { CardGenerationRequest } from './components/CardGenerationRequest';
 import { CardGenerator } from './components/CardGenerator';
+import { GenerationSuccess } from './components/GenerationSuccess';
 import { Landing } from './components/Landing';
+import { TrainSetUpload } from './components/TrainSetUpload';
 
 const pageVariants = {
   initial: {
@@ -82,6 +84,8 @@ function App() {
         <Routes location={location} key={normalizedPathname}>
           <Route element={<AnimationLayout />}>
             <Route path="/" element={<Landing />} />
+            <Route path="/upload" element={<TrainSetUpload />} />
+            <Route path="/generation/success" element={<GenerationSuccess />} />
             <Route path="/create/*" element={<CardGenerator />} />
             <Route path="/requests/:id" element={<CardGenerationRequest />} />
             <Route path="/assets/:id" element={<AssetDetails />} />

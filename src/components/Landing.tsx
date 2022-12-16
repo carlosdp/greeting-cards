@@ -45,7 +45,7 @@ export const Landing = () => {
   // }, []);
 
   const onCreate = useCallback(() => {
-    navigate('/create');
+    navigate('/upload');
   }, [navigate]);
 
   return (

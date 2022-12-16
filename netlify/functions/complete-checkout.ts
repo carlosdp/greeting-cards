@@ -31,41 +31,59 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     const session = evt.data.object;
     const orderId = session.client_reference_id;
 
-    const { data: order } = await client
+    const {
+      data: order,
+      error,
+      count,
+    } = await client
       .from('orders')
       .update({ stripe_payment_intent_id: session.payment_intent })
       .eq('id', orderId)
       .select('*')
       .single();
-    const { data: asset } = await client.from('assets').select('*').eq('id', order.asset_id).single();
 
-    const coverImageUrl = await client.storage.from('assets').createSignedUrl(asset.storage_key, 60 * 60 * 12);
+    // TODO: make this code less bad
+    if (error || !order || !count || count < 1) {
+      const { data: generationOrder, error: genError } = await client
+        .from('generation_orders')
+        .update({ stripe_payment_intent_id: session.payment_intent })
+        .eq('id', orderId)
+        .select('*')
+        .single();
 
-    const scale = order.product === 'greeting_card' ? 2105 / 768 : 2025 / 768;
-
-    const res = await axios.post(
-      'https://api.replicate.com/v1/predictions',
-      {
-        version: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
-        input: {
-          image: coverImageUrl.data?.signedUrl,
-          scale,
-        },
-        webhook_completed: `${process.env.URL}/.netlify/functions/generate-print-job-background?orderId=${orderId}`,
-      },
-      {
-        headers: {
-          Authorization: `Token ${process.env.REPLICATE_API_KEY}`,
-        },
+      if (genError || !generationOrder) {
+        throw new Error(`Failed to find an order with id ${orderId}`);
       }
-    );
+    } else {
+      const { data: asset } = await client.from('assets').select('*').eq('id', order.asset_id).single();
+      const coverImageUrl = await client.storage.from('assets').createSignedUrl(asset.storage_key, 60 * 60 * 12);
 
-    if (res.status > 299) {
-      throw new Error('Failed to create upscale job');
+      const scale = order.product === 'greeting_card' ? 2105 / 768 : 2025 / 768;
+
+      const res = await axios.post(
+        'https://api.replicate.com/v1/predictions',
+        {
+          version: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
+          input: {
+            image: coverImageUrl.data?.signedUrl,
+            scale,
+          },
+          webhook_completed: `${process.env.URL}/.netlify/functions/generate-print-job-background?orderId=${orderId}`,
+        },
+        {
+          headers: {
+            Authorization: `Token ${process.env.REPLICATE_API_KEY}`,
+          },
+        }
+      );
+
+      if (res.status > 299) {
+        throw new Error('Failed to create upscale job');
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(`Upscale job created for ${orderId}`);
     }
-
-    // eslint-disable-next-line no-console
-    console.log(`Upscale job created for ${orderId}`);
   }
 
   return {

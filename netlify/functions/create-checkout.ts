@@ -46,7 +46,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     .select()
     .single();
 
-  if (error || !order) {
+  if (error || !createdOrder) {
     throw new Error('could not create order');
   }
 
