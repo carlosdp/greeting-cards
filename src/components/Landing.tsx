@@ -62,7 +62,7 @@ export const Landing = () => {
         <Box flexDirection="column" gap="12px" display="flex" width="100%" paddingBottom={{ base: '50px', lg: '32px' }}>
           <Heading fontSize={{ base: '36px', lg: '64px' }}>Send Personalized Greeting Cards, easy</Heading>
           <Center paddingTop="20px" paddingBottom="20px">
-            <Button onClick={onCreate} size="lg">
+            <Button isDisabled={true} onClick={onCreate} size="lg">
               Create a Card
             </Button>
           </Center>
